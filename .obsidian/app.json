@@ -1,9 +1,10 @@
 {
-  "strictLineBreaks": true,
-  "spellcheck": false,
-  "newLinkFormat": "absolute",
-  "useMarkdownLinks": true,
-  "attachmentFolderPath": ".tmp",
   "readableLineLength": false,
-  "alwaysUpdateLinks": true
+  "useTab": false,
+  "spellcheck": false,
+  "showLineNumber": true,
+  "newLinkFormat": "relative",
+  "alwaysUpdateLinks": true,
+  "useMarkdownLinks": true,
+  "promptDelete": false
 }
