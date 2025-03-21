@@ -1,0 +1,9 @@
+{
+  "strictLineBreaks": true,
+  "spellcheck": false,
+  "newLinkFormat": "absolute",
+  "useMarkdownLinks": true,
+  "attachmentFolderPath": ".tmp",
+  "readableLineLength": false,
+  "alwaysUpdateLinks": true
+}
