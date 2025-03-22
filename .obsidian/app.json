@@ -6,5 +6,6 @@
   "newLinkFormat": "relative",
   "alwaysUpdateLinks": true,
   "useMarkdownLinks": true,
-  "promptDelete": false
+  "promptDelete": false,
+  "attachmentFolderPath": "./img"
 }
