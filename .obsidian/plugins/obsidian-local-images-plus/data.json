@@ -1,7 +1,7 @@
 {
   "processCreated": true,
   "ignoredExt": "cnt|php|htm|html",
-  "processAll": false,
+  "processAll": true,
   "useCaptions": true,
   "pathInTags": "fullDirPath",
   "downUnknown": false,
