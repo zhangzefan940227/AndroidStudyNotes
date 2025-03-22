@@ -6,23 +6,26 @@
 
 本文将详细介绍 WebView 加载一个URL时的整个流程和相关的事件回调。
 
+
+
 # 一、WebView加载流程时序图
 
 当用户通过 `WebView` 加载一个URL时，整个过程涉及多个组件和一系列复杂的交互。下面是一个 `WebView` 加载URL的时序图，以及对每个回调事件的详细说明。
 
-![](img/7b95d09796ea2ad798fdf6bfd73c67d2_MD5.jpg)
+![img](./img/1729865053211-e8e5f158-06a8-4a91-8bc2-78cb3495745e.jpeg)
 
 上面的时序图展示了从开始加载URL到页面加载完成的整个过程中WebView和WebViewClient的交互。每个回调都在特定的时机被触发，以处理不同的事件和状态变化。
 
 # 二、WebView 加载过程中的原生层处理及代码示例
 
-![](img/6e9b071a420b7bd4e29cbe850221e41f_MD5.webp)  
+![img](./img/1729865183088-508f8a0c-aabf-4d1a-96f9-3467cc09a744.webp)
+ 
 
 ## 2.1 触发加载
 
 用户或应用触发 `loadUrl()` 方法，开始加载指定的URL。在实际应用中，可能需要处理网络不可用的情况。以下是如何检查网络状态并相应地处理的示例代码：
 
-```
+```java
 if(isNetworkAvailable()) {
     webView.loadUrl("http://www.example.com");
 } else {
@@ -42,7 +45,7 @@ public boolean isNetworkAvailable() {
 
 `WebView` 调用其底层实现（通常是 `AwContents` 的 `nativeLoadUrl()` 方法）来开始网络请求。在这个阶段，开发者可能需要添加自定义的用户代理或处理重定向。示例代码如下：
 
-```
+```java
 webView.getSettings().setUserAgentString("CustomUserAgent");
 webView.setWebViewClient(new WebViewClient() {
     @Override
@@ -68,7 +71,7 @@ webView.setWebViewClient(new WebViewClient() {
 
 在页面加载的各个阶段，开发者可以通过 `onPageStarted()` 和 `onLoadResource()` 方法来显示加载指示器或日志资源加载情况。例如：
 
-```
+```java
 webView.setWebViewClient(new WebViewClient() {
     @Override
     public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -90,11 +93,13 @@ webView.setWebViewClient(new WebViewClient() {
 });
 ```
 
+
+
 ## 2.4 处理特殊事件
 
 在加载过程中，`WebView` 可能会遇到需要特殊处理的情况，如SSL错误处理。以下是如何处理SSL错误的示例：
 
-```
+```java
 webView.setWebViewClient(new WebViewClient() {
     @Override
     public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
@@ -112,7 +117,7 @@ webView.setWebViewClient(new WebViewClient() {
 
 当页面即将可见时，`onPageCommitVisible()` 方法被调用。这是更新UI或进行最后调整的好时机。例如：
 
-```
+```java
 webView.setWebViewClient(new WebViewClient() {
     @Override
     public void onPageCommitVisible(WebView view, String url) {
@@ -124,6 +129,8 @@ webView.setWebViewClient(new WebViewClient() {
 ```
 
 通过这些示例和解决方案，可以更好地理解和利用 `WebView` 的各种功能。
+
+
 
 # 三、AwContents
 
@@ -149,6 +156,8 @@ webView.setWebViewClient(new WebViewClient() {
 
 `AwContents` 是 Android WebView 中的一个关键组件，它使得 WebView 能够利用 Chromium 引擎的强大功能，提供高性能和高兼容性的网页浏览体验。
 
+
+
 ## 四、利用WebView回调函数检测白屏
 
 在Android开发中，使用WebView时偶尔会遇到白屏问题，这通常是由于网页加载不完全、资源加载失败或者JavaScript错误等原因引起的。利用WebView的回调函数可以帮助我们检测并诊断这种白屏问题。以下是一些策略和步骤，展示如何使用WebView的回调函数来检测白屏：
@@ -157,7 +166,7 @@ webView.setWebViewClient(new WebViewClient() {
 
 白屏可能是因为页面加载时间过长。通过记录`onPageStarted`和`onPageFinished`之间的时间差，可以判断页面是否在合理的时间内完成加载。
 
-```
+```java
 webView.setWebViewClient(new WebViewClient() {
     long startTime;
 
@@ -182,7 +191,7 @@ webView.setWebViewClient(new WebViewClient() {
 
 这些回调函数可以帮助我们捕获在加载过程中发生的错误，这些错误可能会导致页面内容无法正确显示，从而出现白屏。
 
-```
+```java
 webView.setWebViewClient(new WebViewClient() {
     @Override
     public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
@@ -202,8 +211,7 @@ webView.setWebViewClient(new WebViewClient() {
 
 如果关键资源（如CSS或JavaScript文件）加载失败，可能会导致页面显示不完整或白屏。通过`shouldInterceptRequest`可以监控这些资源的加载情况。
 
-```
-
+```java
 webView.setWebViewClient(new WebViewClient() {
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -217,7 +225,7 @@ webView.setWebViewClient(new WebViewClient() {
 
 `onPageCommitVisible`在页面内容即将显示时调用，如果在这个阶段页面内容为空或不完整，可能是一个白屏的迹象。但是，`onPageCommitVisible`回调本身并不能直接提供页面内容的信息，我们需要结合其他方法来实现这个目标。一种可能的方法是在`onPageCommitVisible`回调中使用`evaluateJavascript`来检查页面的DOM结构。例如，我们可以检查某个关键元素是否存在，或者是否有内容。以下是一个示例：
 
-```
+```java
 webView.setWebViewClient(new WebViewClient() {
     @Override
     public void onPageCommitVisible(WebView view, String url) {
@@ -245,7 +253,7 @@ webView.setWebViewClient(new WebViewClient() {
 
 通过注入JavaScript代码检查DOM元素的存在或内容，可以帮助确认页面是否正确渲染。
 
-```
+```java
 webView.evaluateJavascript("(function() { return document.body.innerHTML; })();", new ValueCallback<String>() {
     @Override
     public void onReceiveValue(String html) {

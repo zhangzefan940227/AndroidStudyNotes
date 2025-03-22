@@ -1,6 +1,5 @@
 # Android 回调机制
 
-# Android 回调机制
 
 
 回调本质上还是方法调用。只是为了防止两个类互相持有对方的对象导致耦合度过高。
@@ -10,13 +9,16 @@
 #### 看一个例子
 
 
-+ class A 实现接口 CallBack callback ——背景1
-+ class A 中包含一个 class B 的引用 b ——背景2
-+ class B 有一个形参为 callback 的方法 f(CallBack callback) ——背景3  
-  
-A 的对象 a 调用 B 的方法 f(CallBack callback) ——A 类调用 B 类的某个方法 C  
-  
-然后 b 就可以在 f(CallBack callback) 方法中调用A的方法 ——B 类调用 A 类的某个方法 D
+
+- class A 实现接口 CallBack callback ——背景1
+
+- class A 中包含一个 class B 的引用 b ——背景2
+
+- class B 有一个形参为 callback 的方法 f(CallBack callback) ——背景3
+
+  A 的对象 a 调用 B 的方法 f(CallBack callback) ——A 类调用 B 类的某个方法 C
+
+  然后 b 就可以在 f(CallBack callback) 方法中调用A的方法 ——B 类调用 A 类的某个方法 D
 
 
 
@@ -73,11 +75,11 @@ public class CallBackTest{
 
 
 
-+ 主函数执行到a.funtionA();
-+ 调用b.setOnClickListener(a);
-+ String answer = "callback";表示在b中完成了该流程得到结果
-+ a.doCallback(answer);然后将结果以参数的形式传入a中，执行doCallback()方法，回调
-+ System.out.println("the answer is:"+result);[//a.doCallback](//a.doCallback)(answer);执行后进行结果输出
+- 主函数执行到a.funtionA();
+- 调用b.setOnClickListener(a);
+- String answer = "callback";表示在b中完成了该流程得到结果
+- a.doCallback(answer);然后将结果以参数的形式传入a中，执行doCallback()方法，回调
+- System.out.println("the answer is:"+result);[//a.doCallback](http://a.doCallback)(answer);执行后进行结果输出
 
 
 
@@ -86,6 +88,7 @@ public class CallBackTest{
 
 
 #### 第一种 onClick
+
 
 
 这个是View类的回调接口
@@ -114,7 +117,6 @@ public interface OnClickListener {
 
 
 ```java
-
 import android.app.Activity;  
 import android.os.Bundle;  
 import android.view.View;  
@@ -206,6 +208,7 @@ public class View implements Drawable.Callback, KeyEvent.Callback, Accessibility
 #### 第二种 onClick()
 
 
+
 **Button 为 B 类（子类），重写了 A类 （父类）View类的 setOnClickListener() 方法**
 
 
@@ -258,13 +261,8 @@ public boolean performClick() {
 
 
 
-两种写法的差别在于：  
-  
-第一种写法：A类为MainActivity.class,B类为View（Button继承View）  
-  
+两种写法的差别在于：
+
+第一种写法：A类为MainActivity.class,B类为View（Button继承View）
+
 第二种写法：A类为View类，B类为Button类
-
-
-
-> 更新: 2021-04-27 20:52:36  
-> 原文: <https://www.yuque.com/zhangxiaofani4cu/xih3ez/wedmkf>

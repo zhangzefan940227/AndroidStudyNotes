@@ -1,12 +1,10 @@
-# RecycleView
-
 # 1. 原理
+
 **ViewHolder**
 
-> ViewHolder 只做一件事：容纳 View 视图
->
-> ![1619593792403-d1060f27-4006-46b4-8509-69189c9d2c13.png](img/_ZbBaH5W9VqkCYsF/1619593792403-d1060f27-4006-46b4-8509-69189c9d2c13-581226.png)
->
+ViewHolder 只做一件事：容纳 View 视图
+
+![img](./img/1619593792403-d1060f27-4006-46b4-8509-69189c9d2c13.png)
 
 【示例】ViewHolder 子类
 
@@ -36,7 +34,7 @@ ImageView imageViewTest = test.mImageViewTest;
 
 RecycleView 通过 Adapter 创建 ViewHolder，ViewHolder 引用 itemView。
 
-![1619595569045-68955c9a-769d-4fee-ac84-22bfbebe3d81.png](img/_ZbBaH5W9VqkCYsF/1619595569045-68955c9a-769d-4fee-ac84-22bfbebe3d81-652196.png)
+![img](./img/1619595569045-68955c9a-769d-4fee-ac84-22bfbebe3d81.png)
 
 **Adapter**
 
@@ -52,10 +50,12 @@ Adapter 是 RecycleView 和 ViewHolder 沟通的桥梁，负责：
 3. 调用 onBindViewHolder(ViewHolder v, int i) 传入 ViewHolder 及其位置
 
 # 2. 使用
+
 ## 基本使用
 
 
-**添加依赖**  
+
+**添加依赖**
 在在build.gradle文件中添加依赖
 
 ```java
@@ -176,13 +176,15 @@ public class VerticalRecycleViewActivity extends AppCompatActivity {
 ```
 
 ## 布局管理器
+
 RecyclerView提供了三种布局管理器：
 
-+ LinearLayoutManager 线性布局管理器
-+ StaggeredGridLayoutManager 瀑布流布局管理器
-+ GridLayoutManager 网格布局管理器  
-这三种布局管理器都是通过setLayoutManager方法来设置, 以LinearLayoutManager为例，只需要在MainActivity中添加该布局管理器即可。  
-有两种方式都可以实现该功能。
+- LinearLayoutManager 线性布局管理器
+- StaggeredGridLayoutManager 瀑布流布局管理器
+- GridLayoutManager 网格布局管理器
+  这三种布局管理器都是通过setLayoutManager方法来设置, 以LinearLayoutManager为例，只需要在MainActivity中添加该布局管理器即可。
+  有两种方式都可以实现该功能。
+
 1. **构造方法中直接传入布局参数**
 
 ```java
@@ -191,15 +193,10 @@ LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLa
 
 
 
-2. **也可以通过 setOrientation() 方法设置布局参数**
+1. **也可以通过 setOrientation() 方法设置布局参数**
 
 ```java
 LinearLayoutManager layoutManager = new LinearLayoutManager(MainActivity.this);
 layoutManager.setOrientation(RecyclerView.HORIZONTAL);
 mRecyclerView.setLayoutManager(layoutManager);
 ```
-
-
-
-> 更新: 2023-12-10 16:52:36  
-> 原文: <https://www.yuque.com/zhangxiaofani4cu/xih3ez/iixrzz>

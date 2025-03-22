@@ -7,14 +7,21 @@ Java虚拟机需要解决的核心问题：
 
 JVM中的daemon线程是VM自身使用的线程，比如执行垃圾回收操作的工作线程
 
+
+
 **为什么需要JVM**
 
 Java文件必须先通过编译器javac，将代码编译为.class文件，然后JVM把class文件解释成各个平台可以识别的机器码，最终实现跨平台运行代码。
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/6e6c5c39b13d957bf8b1bd38ad8bb9af_MD5.png)
+![img](./img/1700290588529-eb5ceb4e-4c92-461c-96bd-909e1c2ca893.png)
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/2d00048c1d0333e9470fda3658c6776d_MD5.webp)
-### ![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/1b5739d80f9d24b52f4197f2a4bfed08_MD5.png)
+![img](./img/1700307236765-a3b5f77a-26ab-40f3-8ee7-f1cc93cb43d2.webp)
+
+
+
+## 1 JVM架构核心模块
+
+### ![img](./img/1699937691004-e0608385-6ce0-4883-a9f9-ee7d2d9af6d4.png)
 
 ## 2 类加载器（ClassLoader）
 
@@ -47,29 +54,31 @@ Java文件必须先通过编译器javac，将代码编译为.class文件，然�
 
 注意：在Cache中查询和类加载器加载是两个不同的概念。
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/09ac160542e8adc4558748841f215790_MD5.png)
+![img](./img/1699957721451-ad538962-f9d9-45e1-9efb-f0dc9b7cdd98.png)
+
+
 
 **ClassLoader加载流程**
 
 1. Loading：**查找和加载**目标类数据
 2. Linking：检验目标类是否合法有效
 
-3. Verification  
-    **检验**加载的数据是否合法
-4. Preparation  
-    为类变量和其他数据**分配**内存空间，并**初始化为默认值**
-5. Resolution  
-    将符号引用**转换**为直接引用的过程  
-    ![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/836167d536d6b45b1226e8b88aa38dcb_MD5.png)
+1. Verification
+   **检验**加载的数据是否合法
+2. Preparation
+   为类变量和其他数据**分配**内存空间，并**初始化为默认值**
+3. Resolution
+   将符号引用**转换**为直接引用的过程
+   ![img](./img/1699958925932-da63c6f3-6001-45fa-8d7e-be91e2059414.png)
 
-6. Initialization  
-    为上述步骤中的对象做**初始化**操作
+1. Initialization
+   为上述步骤中的对象做**初始化**操作
 
 ## 3 运行时数据区（Runtime Data Areas）
 
 Runtime Data Areas是JVM在程序运行过程中所需的数据区域，由Stack、Heap、MethodArea、Program Counter Register多个部分组成
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/641fdffb5dd9522d66299d1a911b7b85_MD5.webp)
+![img](./img/1699959570067-3a25f67b-a817-4052-a693-7a43be8be380.webp)
 
 ### 3.1 程序计数器（Program Counter Register）
 
@@ -86,7 +95,7 @@ Runtime Data Areas是JVM在程序运行过程中所需的数据区域，由Stack
 - 每一个方法被调用的过程就对应一个栈帧在虚拟机栈中从入栈到出栈的过程
 - 虚拟机栈执行的是Java方法服务
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/6cb583986eaf5acbeb0563b50b2ee16b_MD5.webp)
+![img](./img/1700108921132-d2f4c337-5cba-429c-9ec8-7b7bc720139b.webp)
 
 ### 3.3 本地方法栈（ Native Method Stack）
 
@@ -112,7 +121,7 @@ java虚拟机规范对这块的描述是:**所有对象实例及数组都要在�
 - 线程共享
 - 存放每个Class结构中的运行时常量池、方法数据、方法的源代码等
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/252628a795486ac965bbb19129a833c5_MD5.webp)
+![img](./img/1700108834931-eba550ea-87ad-410d-b1f0-ecfe521e6e07.webp)
 
 **JVM为什么使用元空间替换永久代？**
 
@@ -130,24 +139,24 @@ java虚拟机规范对这块的描述是:**所有对象实例及数组都要在�
 
 方法区不在堆内存中
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/9826065910dcfbaf174efdb6e7bdbc12_MD5.png)
+![img](./img/1700109871977-cdaa0ba1-40f0-4481-b277-2b690df422c6.png)
 
 ## 1 分代垃圾回收机制
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/31acb65ddf6f45a0c22a29cae39c6df6_MD5.png)
+![img](./img/1700131304909-84da56a1-ce99-47b3-b3ae-f9a177ac2c33.png)
 
 1. 内存空间的申请请求首先考虑从Eden区分配，新创建的对象会被分配到新生代中
 2. 当Eden区无法满足请求（即内存占满），触发一次 Minor GC，清理Eden、From Survivor区中的垃圾
 
-3. 清理完成后，Eden、From Survivor中无法被回收的对象会被转移到To Survivor区
-4. 互换两个Survivior区的标记，From变为To，To变为From，这样就保证了To区始终为空
+1. 清理完成后，Eden、From Survivor中无法被回收的对象会被转移到To Survivor区
+2. 互换两个Survivior区的标记，From变为To，To变为From，这样就保证了To区始终为空
 
-5. 然后根据以下条件，将年轻代对象复制到老年代空间中
+1. 然后根据以下条件，将年轻代对象复制到老年代空间中
 
-6. Survivor已满，则会进行复制
-7. 对象的存活时间达到一定阈值：每执行一次Minor GC，年龄增加1，超过阈值（默认15）后对象会被复制到老年代空间
+1. Survivor已满，则会进行复制
+2. 对象的存活时间达到一定阈值：每执行一次Minor GC，年龄增加1，超过阈值（默认15）后对象会被复制到老年代空间
 
-8. 如果老年代空间满了，则会触发一次 Full GC。若Full GC无法满足程序的内存请求，则很可能触发OOM报错
+1. 如果老年代空间满了，则会触发一次 Full GC。若Full GC无法满足程序的内存请求，则很可能触发OOM报错
 
 **老年代空间分配担保规则**
 
@@ -156,8 +165,8 @@ Minor GC前，JVM会比较当前新生代中所有**对象的大小**和老年�
 1. 可用空间大小>新生代对象大小，直接触发Minor GC
 2. 可用空间大小<新生代对象大小，则比较**老年代可用空间大小**是否大于之前每次Minor GC后**进入老年代的对象的平均大小**
 
-3. 大于，则触发Minor GC，GC后S区和老年代都放不下，则触发Full GC
-4. 小于，触发Full GC
+1. 大于，则触发Minor GC，GC后S区和老年代都放不下，则触发Full GC
+2. 小于，触发Full GC
 
 Full = Minor + Major
 
@@ -182,8 +191,8 @@ Full = Minor + Major
 1. 可达性分析后没有发现引用链
 2. 查看对象是否有重写finalize方法
 
-3. 如果有重写且在方法内完成自救（比如再建立引用），则不会进行回收。（注意：一个类的finalize只执行一次，这就会出现一样的代码第一次自救成功第二次失败的情况）
-4. 如果类重写finalize且还没调用过，会将这个对象放到一个叫做F-Queue的序列里，这边finalize不承诺一定会执行，这么做是因为如果里面死循环的话可能会使F-Queue队列处于等待，严重会导致内存崩溃
+1. 如果有重写且在方法内完成自救（比如再建立引用），则不会进行回收。（注意：一个类的finalize只执行一次，这就会出现一样的代码第一次自救成功第二次失败的情况）
+2. 如果类重写finalize且还没调用过，会将这个对象放到一个叫做F-Queue的序列里，这边finalize不承诺一定会执行，这么做是因为如果里面死循环的话可能会使F-Queue队列处于等待，严重会导致内存崩溃
 
 ## 2 垃圾回收算法
 
@@ -217,7 +226,7 @@ Full = Minor + Major
 1. 标记阶段：与标记-清除算法一致
 2. 整理阶段：让所有存活的对象，都向内存的一端移动，然后直接清理吊端边线之外的内存
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/175c0b7df727e5cd190d0e96669e7ceb_MD5.png)
+![img](./img/1700227831546-dddf7236-5fd6-4194-8313-aad752dafd3c.png)
 
 ## 3 常见垃圾回收器
 
@@ -235,7 +244,7 @@ CMS 全称 Concurrent Mark Sweep 并发标记清除垃圾回收器。是一种�
 4. **重新标记**：重新标记这个阶段会暂停用户线程，将上一步并发标记过程中用户线程引起的更新进行修正，这个时间会比初始标记时间长，但是会比并发标记时间短一点
 5. **并发清除**：在所有需要清理的对象都被标记完过后就会执行最后一步清理的动作。清理的时候用户线程是可以继续运行的，GC 线程只清理标记的区域
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/a0d62eeb7283a19519ff0ae6d630e778_MD5.webp)
+![img](./img/1700833406787-dabcb7c0-e7d7-410b-ade3-18be3ecaf353.webp)
 
 ### 3.2 G1垃圾回收器
 

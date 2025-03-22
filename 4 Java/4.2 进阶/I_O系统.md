@@ -1,6 +1,6 @@
-# 1  输入输出
+# 1 输入输出
 
-## 1.1  输入（Input）
+## 1.1 输入（Input）
 
 　　输入是指可以让程序从外部系统获得数据（核心含义是“**读**”，读取外部数据）。
 
@@ -10,7 +10,7 @@
 - 读物网络上某个位置的内容到程序。浏览器输入网之后，打开该网址对应的网页内容。
 - 读取数据库系统的数据到程序。
 
-## 1.2  输入（Output）
+## 1.2 输入（Output）
 
 　　输出是指程序输出数据给外部系统从而可以操作外部系统（核心含义是“**写**”，将数据写出到外部系统）。
 
@@ -19,28 +19,28 @@
 - 将数据写到硬盘中。编辑一个word文档后，将内容写到硬盘上进行保存。
 - 将数据写到数据库中。注册一个网站会员，实际就是后台程序向数据库写入一条记录。
 
-## 1.3  数据源
+## 1.3 数据源
 
 　　数据源分为：源设备、目标设备。
 
 - 源设备：为程序提供数据，一般对应输入流。
 - 目标设备：程序数据的目的地，一半对应输出流。
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/a8b8adc00aa36ce36f3ab3f7fec4afb9_MD5.png)
+![img](./img/1619428208563-a5b4e7de-869f-4467-b0a0-511618265767.png)
 
-# 2  I/O流
+# 2 I/O流
 
-## 2.1  按流的方向分类
+## 2.1 按流的方向分类
 
 - 输入流：数据源到程序。
 - 输出流：程序到目的地。
 
-## 2.2  按处理的数据单元分类
+## 2.2 按处理的数据单元分类
 
 - 字节流：以字节为单位获取数据。命名上以 Stream 结尾的流一般是字节流。
 - 字符流：以字符为单位以字符为单位获取数据。命名上以 Reader/Writer 结尾的流一般是字符流。
 
-## 2.3  按处理对象不同分类
+## 2.3 按处理对象不同分类
 
 - 节点流：可以直接从数据源或目的地读写数据。
 - 处理流：不直接连接到数据源或目的地。通过对其他流的处理提高程序性能，也叫包装流。
@@ -49,9 +49,9 @@
 
 　　（个人理解：实际上就是对已形成的流进行了包装设计。）
 
-# 3  常用类
+# 3 常用类
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/0223aebd7cad20632d98475d2e608949_MD5.png)
+![img](./img/1619428222615-67ff5abf-b2c2-498e-8b53-3c5016a8105b.png)
 
 **1. InputStream / OutputStream：**
 
@@ -104,9 +104,11 @@ public class FISDemo {
 
 运行结果如下图所示：
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/b5bf33c205c949f09584fc23dfb4ca1e_MD5.png)
+![img](./img/1619428326020-c0e3fca5-1083-48bc-9573-982494edf1b2.png)
 
 　　这个例子中，创建的字节流 FileInputStream 通过 read() 方法将指定目录文件 “FileTest\fan.txt” 中的数据读取并打印。之所以输出数字是因为硬盘上的文件是以字节的形式存在的。需要注意的是，“Hello World” 中，空格也占一个字节，其对应的ASCII码值是32。一旦遇到 IO 异常，IO 流的 close() 方法将无法得到执行，流对象所占用的系统资源将得不到释放，因此，为了保证 IO 流的 close() 方法必须执行，通常将关闭流的操作写在 finally 代码块中。
+
+
 
 **【例3-2】**使用FileOutputStream输出数据
 
@@ -141,7 +143,7 @@ public class FOSDemo {
 
 程序运行后，会在指定目录 “FileTest” 下生成一个新的文本文件 “fan1.txt”，打开文件会看到如下图所示的内容：
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/1c5c949dbd892adc834be92bfbba420f_MD5.png)
+![img](./img/1619428347039-ad4c4155-109d-4546-baa0-f8ab3f498c80.png)
 
 　　需要注意的是，如果通过 FileOutputStream 向一个已经存在的文件中写入数据，那么该文件中的数据首先会被清空，再写入新数据。若希望在已存在的文件内容之后追加新内容，则可使用 FileOutputStream 构造函数 FileOutputStream(String fileName, boolean append) 来创建文件输出流对象，并把 append 参数值设为true。对例3-2 中关键代码进行如下修改：
 
@@ -196,7 +198,7 @@ public class TestByteArray {
 
 输入结果如下图所示：
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/7d846b88e61990c57a601291ec95b322_MD5.png)
+![img](./img/1619428421996-b810bbb7-584a-492e-94ed-21b513fc103a.png)
 
 　　ByteArrayInputStream 和 ByteArrayOutputStream 经常用在需要流和数组之间转化的情况。
 
@@ -278,7 +280,7 @@ public class TestDataStream {
 
 运行结果如下图所示：
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/0c86e6f30bf7139215db5a2de8226e8b_MD5.png)
+![img](./img/1619428454254-8ab54ebe-3d4e-43a1-a6b8-f61c53601ffa.png)
 
 　　存在的问题是，打开所操作的文件时会发现，文本中出现乱码或者不显示 int 类型的数字1。网上进行查阅之后，说是writeInt底层使用的是位操作，实际操作的是字符。可以正确读取就可以了。
 
@@ -288,7 +290,7 @@ public class TestDataStream {
 
 **【例3-5】**使用FileReader读取文件
 
-```
+```java
 package com.ZZF.io;
 
 import java.io.*;
@@ -319,7 +321,7 @@ public class FRDemo {
 
 运行结果如下图所示：
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/90a5bd451b823c370404683a78c460ac_MD5.png)
+![img](./img/1619428477307-9f2762be-b7ab-4687-8e84-58f55592d8b8.png)
 
 　　字符输入流的 read() 方法返回的是int类型的值，要想获得字符就需要进行强制类型转换。
 
@@ -359,11 +361,11 @@ public class FWDemo {
 
 打开 “fan.txt” 文件会看到如下图所示内容：
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/c2896070aaade8409a65f2b66e3d4073_MD5.png)
+![img](./img/1619428497139-9acb2ac9-2ed8-4477-a0f2-306a91e5c59b.png)
 
 **8. BufferedReader / BufferedWriter**
 
-        处理流：将Reader/Writer对象进行包装，增加缓存功能，提高读写效率。
+​    处理流：将Reader/Writer对象进行包装，增加缓存功能，提高读写效率。
 
 **【例3-7】**使用 BufferedReader/BufferedWriter对文件内容进行复制
 
@@ -437,7 +439,7 @@ public class BRWDemo {
 
 **9. BufferedInputStream / BufferedOutputStream**
 
-        处理流：将InputStream/OutputStream对象进行包装，增加缓存功能，提高读写效率。
+​    处理流：将InputStream/OutputStream对象进行包装，增加缓存功能，提高读写效率。
 
 **【例3-8】**使用 BufferedInputStream/BufferedOutputStream 实现文件的复制
 
@@ -491,15 +493,15 @@ public class BIOSDemo {
 
 **10. InputStreamReader / OutputStreamWriter**
 
-        处理流：将字节流对象转化成字符流对象。
+​    处理流：将字节流对象转化成字符流对象。
 
 　　System.in是字节流对象，代表键盘的输入，如果我们想按行接收用户的输入时，就必须用到缓冲字符流BufferedReader特有的方法readLine()，但是经过观察会发现在创建BufferedReader的构造方法的参数必须是一个Reader对象，这时候我们的转换流InputStreamReader就派上用场了。
 
-       而System.out也是字节流对象，代表输出到显示器，按行读取用户的输入后，并且要将读取的一行字符串直接显示到控制台，就需要用到字符流的write(String str)方法，所以我们要使用OutputStreamWriter将字节流转化为字符流。
+​    而System.out也是字节流对象，代表输出到显示器，按行读取用户的输入后，并且要将读取的一行字符串直接显示到控制台，就需要用到字符流的write(String str)方法，所以我们要使用OutputStreamWriter将字节流转化为字符流。
 
 **11. PrintStream**
 
-        处理流：将OutputStream进行包装，可以方便地输出字符，更加灵活。
+​    处理流：将OutputStream进行包装，可以方便地输出字符，更加灵活。
 
 ### **装饰器模式**
 
@@ -507,4 +509,4 @@ public class BIOSDemo {
 
 　　这种设计模式创建了一个装饰类，用来包装原有的类，并在保持类方法签名完整性的前提下，提供了额外的功能。
 
-![](4%20Java/4.2%20%E8%BF%9B%E9%98%B6/img/5e061fc3d98f6c44a2541a63b19fdfba_MD5.png)
+![img](./img/1619428529339-731da654-34ef-4aa3-8178-d8c99fbbc692.png)

@@ -1,77 +1,73 @@
-# CTS
+兼容性测试套件 (CTS) 是一个免费的商业级测试套件，可以[下载](https://source.android.com/compatibility/cts/downloads)二进制文件版本，也可以在 [Android 开源项目 (AOSP)](https://android.googlesource.com/platform/cts/) 中下载源代码版本。CTS 代表兼容性“机制”。
 
-<font style="color:rgb(32, 33, 36);">兼容性测试套件 (CTS) 是一个免费的商业级测试套件，可以</font>[下载](https://source.android.com/compatibility/cts/downloads)<font style="color:rgb(32, 33, 36);">二进制文件版本，也可以在 </font>[Android 开源项目 (AOSP)](https://android.googlesource.com/platform/cts/)<font style="color:rgb(32, 33, 36);"> 中下载源代码版本。CTS 代表兼容性“机制”。</font>
 
-<font style="color:rgb(32, 33, 36);"></font>
 
-# <font style="color:rgb(32, 33, 36);">1 工作流程</font>
-![1649575153691-4eedc087-c352-4fc2-8626-6d5f80ec2798.png](./img/ed0c9ZduSBkLKqz1/1649575153691-4eedc087-c352-4fc2-8626-6d5f80ec2798-184398.png)
+# 1 工作流程
+
+![img](./img/1649575153691-4eedc087-c352-4fc2-8626-6d5f80ec2798.png)
 
 # 2 环境搭建
+
 ## 2.1 物理环境
+
 **低功耗蓝牙信标**
 
-> 至少三个低功耗蓝牙信标， 以便进行低功耗蓝牙扫描测试。
->
+至少三个低功耗蓝牙信标， 以便进行低功耗蓝牙扫描测试。
 
 **相机**
 
-> 使用正常的照明条件和一个测试图案
->
+使用正常的照明条件和一个测试图案
 
 **GPS/GNSS**
 
-> <font style="color:rgb(32, 33, 36);">以合适的信号电平向 DUT 提供 GPS/GNSS 信号，以便其接收到相应信号并计算 GPS 位置。</font>
->
+以合适的信号电平向 DUT 提供 GPS/GNSS 信号，以便其接收到相应信号并计算 GPS 位置。
 
-**<font style="color:rgb(32, 33, 36);">Wi-Fi 和 IPv6</font>**
+**Wi-Fi 和 IPv6**
 
-> <font style="color:rgb(32, 33, 36);">CTS 测试需要一个支持 IPv6 的 Wi-Fi 网络，可以连接到互联网，并且可以将 DUT 视为独立客户端。</font>
->
+CTS 测试需要一个支持 IPv6 的 Wi-Fi 网络，可以连接到互联网，并且可以将 DUT 视为独立客户端。
 
 **Wi-Fi RTT**
 
-> <font style="color:rgb(32, 33, 36);">Android 包含 </font>[Wi-Fi RTT API](https://developer.android.com/reference/android/net/wifi/rtt/package-summary)<font style="color:rgb(32, 33, 36);">，用于提供 </font>[Wi-Fi 往返时间 (RTT)](https://source.android.com/devices/tech/connect/wifi-rtt)<font style="color:rgb(32, 33, 36);"> 功能。此 API 允许设备测量自身与接入点之间的距离（误差在 1 到 2 米内），从而显著提高室内位置信息的准确性。</font>
->
+Android 包含 [Wi-Fi RTT API](https://developer.android.com/reference/android/net/wifi/rtt/package-summary)，用于提供 [Wi-Fi 往返时间 (RTT)](https://source.android.com/devices/tech/connect/wifi-rtt) 功能。此 API 允许设备测量自身与接入点之间的距离（误差在 1 到 2 米内），从而显著提高室内位置信息的准确性。
 
-<font style="color:rgb(32, 33, 36);"></font>
 
-## <font style="color:rgb(32, 33, 36);">2.2 电脑设置</font>
+
+## 2.2 电脑设置
+
 **adb 和 AAPT**
 
-> <font style="color:rgb(32, 33, 36);">运行 CTS 之前，请确保已安装最新版本的 </font>[Android 调试桥 (adb)](http://developer.android.com/tools/help/adb.html)<font style="color:rgb(32, 33, 36);"> 和 </font>[Android 资源打包工具 (AAPT)](http://developer.android.com/guide/topics/manifest/uses-feature-element.html#testing)<font style="color:rgb(32, 33, 36);">，并已将这两个工具的位置信息添加到计算机的系统路径中。</font>
->
+运行 CTS 之前，请确保已安装最新版本的 [Android 调试桥 (adb)](http://developer.android.com/tools/help/adb.html) 和 [Android 资源打包工具 (AAPT)](http://developer.android.com/guide/topics/manifest/uses-feature-element.html#testing)，并已将这两个工具的位置信息添加到计算机的系统路径中。
 
-**<font style="color:rgb(32, 33, 36);">JDK </font>**
+**JDK** 
 
-> <font style="color:rgb(32, 33, 36);">对于Android 11，推荐使用 OpenJDK 11</font>
->
+对于Android 11，推荐使用 OpenJDK 11
 
-**<font style="color:rgb(32, 33, 36);">CTS 文件</font>**
+**CTS 文件**
 
-> <font style="color:rgb(32, 33, 36);">从</font>[兼容性测试套件下载](https://source.android.com/compatibility/cts/downloads)<font style="color:rgb(32, 33, 36);">页面下载与您设备的 Android 版本以及您设备支持的所有应用二进制接口 (ABI) 相匹配的 CTS 软件包，并将其打开。</font>
->
+从[兼容性测试套件下载](https://source.android.com/compatibility/cts/downloads)页面下载与您设备的 Android 版本以及您设备支持的所有应用二进制接口 (ABI) 相匹配的 CTS 软件包，并将其打开。
 
-<font style="color:rgb(32, 33, 36);"></font>
 
-## <font style="color:rgb(32, 33, 36);">2.3 Android 设备设置</font>
-1. <font style="color:rgb(32, 33, 36);">将设备恢复出厂设置：依次点击</font>**<font style="color:rgb(32, 33, 36);">设置 > 备份和重置 > 恢复出厂设置</font>**<font style="color:rgb(32, 33, 36);">。</font>
-2. <font style="color:rgb(32, 33, 36);">将设备的语言设置为英语（</font>**<font style="color:rgb(32, 33, 36);">美国</font>**<font style="color:rgb(32, 33, 36);">）：依次点击</font>**<font style="color:rgb(32, 33, 36);">设置 > 语言和输入法 > 语言</font>**<font style="color:rgb(32, 33, 36);">。</font>
-3. <font style="color:rgb(32, 33, 36);">如果设备支持自定义默认字体，请将默认</font><font style="color:rgb(32, 33, 36);"> </font>sans-serif<font style="color:rgb(32, 33, 36);"> </font><font style="color:rgb(32, 33, 36);">字体系列设置为</font><font style="color:rgb(32, 33, 36);"> </font>Roboto<font style="color:rgb(32, 33, 36);">（AOSP build 中使用的默认</font><font style="color:rgb(32, 33, 36);"> </font>sans-serif<font style="color:rgb(32, 33, 36);"> </font><font style="color:rgb(32, 33, 36);">字体系列）。</font>
-4. <font style="color:rgb(32, 33, 36);">如果设备有 GPS 或 Wi-Fi/移动网络功能，请开启位置信息设置：依次点击</font>**<font style="color:rgb(32, 33, 36);">设置 > 位置 > 开启</font>**<font style="color:rgb(32, 33, 36);">。</font>
-5. <font style="color:rgb(32, 33, 36);">连接到满足以下要求的 Wi-Fi 网络：支持 IPv6、可以将 DUT 视为独立客户端，并可连接到互联网。连接网络的操作方式为：依次点击</font>**<font style="color:rgb(32, 33, 36);">设置 > Wi-Fi</font>**<font style="color:rgb(32, 33, 36);">。</font>
-6. <font style="color:rgb(32, 33, 36);">确保设备未设置锁屏图案或密码：依次点击</font>**<font style="color:rgb(32, 33, 36);">设置 > 安全 > 屏幕锁定 > 无</font>**<font style="color:rgb(32, 33, 36);">。</font>
-7. <font style="color:rgb(32, 33, 36);">在设备上启用 </font>**<font style="color:rgb(32, 33, 36);">USB 调试</font>**<font style="color:rgb(32, 33, 36);">：依次点击</font>**<font style="color:rgb(32, 33, 36);">设置 > 开发者选项 > USB 调试</font>**<font style="color:rgb(32, 33, 36);">。</font>
-8. <font style="color:rgb(32, 33, 36);">将时间设置为 12 小时制：依次点击</font>**<font style="color:rgb(32, 33, 36);">设置 > 日期和时间 > 使用 24 小时制 > 关闭</font>**<font style="color:rgb(32, 33, 36);">。</font>
-9. <font style="color:rgb(32, 33, 36);">将设备设置为不锁定屏幕：依次点击</font>**<font style="color:rgb(32, 33, 36);">设置 > 开发者选项 > 不锁定屏幕 > 开启</font>**<font style="color:rgb(32, 33, 36);">。</font>
-10. <font style="color:rgb(32, 33, 36);">仅在</font><font style="color:rgb(32, 33, 36);"> </font>**<font style="color:rgb(32, 33, 36);">Android 5.x 和 4.4.x</font>****<font style="color:rgb(32, 33, 36);"> </font>**<font style="color:rgb(32, 33, 36);">上，可以将设备设置为允许模拟位置：依次点击</font>**<font style="color:rgb(32, 33, 36);">设置 > 开发者选项 > 允许模拟位置 > 开启</font>**<font style="color:rgb(32, 33, 36);">。</font>
-11. <font style="color:rgb(32, 33, 36);">在</font><font style="color:rgb(32, 33, 36);"> </font>**<font style="color:rgb(32, 33, 36);">Android 4.2 或更高版本中</font>**<font style="color:rgb(32, 33, 36);">，关闭通过 USB 验证应用：依次点击</font><font style="color:rgb(32, 33, 36);"> </font>**<font style="color:rgb(32, 33, 36);">设置 > 开发者选项 > 通过 USB 验证应用 > 关闭</font>**<font style="color:rgb(32, 33, 36);">。</font>
-12. <font style="color:rgb(32, 33, 36);">启动浏览器并关闭任何启动/设置屏幕。</font>
-13. <font style="color:rgb(32, 33, 36);">使用 USB 数据线连接将要用于测试设备的台式机。</font>
 
-<font style="color:rgb(32, 33, 36);"></font>
+## 2.3 Android 设备设置
 
-## <font style="color:rgb(32, 33, 36);">2.4 文件安装</font>
+1. 将设备恢复出厂设置：依次点击**设置 > 备份和重置 > 恢复出厂设置**。
+2. 将设备的语言设置为英语（**美国**）：依次点击**设置 > 语言和输入法 > 语言**。
+3. 如果设备支持自定义默认字体，请将默认 sans-serif 字体系列设置为 Roboto（AOSP build 中使用的默认 sans-serif 字体系列）。
+4. 如果设备有 GPS 或 Wi-Fi/移动网络功能，请开启位置信息设置：依次点击**设置 > 位置 > 开启**。
+5. 连接到满足以下要求的 Wi-Fi 网络：支持 IPv6、可以将 DUT 视为独立客户端，并可连接到互联网。连接网络的操作方式为：依次点击**设置 > Wi-Fi**。
+6. 确保设备未设置锁屏图案或密码：依次点击**设置 > 安全 > 屏幕锁定 > 无**。
+7. 在设备上启用 **USB 调试**：依次点击**设置 > 开发者选项 > USB 调试**。
+8. 将时间设置为 12 小时制：依次点击**设置 > 日期和时间 > 使用 24 小时制 > 关闭**。
+9. 将设备设置为不锁定屏幕：依次点击**设置 > 开发者选项 > 不锁定屏幕 > 开启**。
+10. 仅在 **Android 5.x 和 4.4.x** 上，可以将设备设置为允许模拟位置：依次点击**设置 > 开发者选项 > 允许模拟位置 > 开启**。
+11. 在 **Android 4.2 或更高版本中**，关闭通过 USB 验证应用：依次点击 **设置 > 开发者选项 > 通过 USB 验证应用 > 关闭**。
+12. 启动浏览器并关闭任何启动/设置屏幕。
+13. 使用 USB 数据线连接将要用于测试设备的台式机。
+
+
+
+## 2.4 文件安装
+
 ```java
 //CTS 2.1 R2 - 4.2 R4 的版本
 abd install -r android-cts/repository/testcases/CtsDelegatingAccessibilityService.apk
@@ -80,32 +76,37 @@ abd install -r android-cts/repository/testcases/CtsDelegatingAccessibilityServic
 
 **将 CTS 媒体文件复制到设备**
 
-1. <font style="color:rgb(32, 33, 36);">导航 (</font>cd<font style="color:rgb(32, 33, 36);">) 到下载并解压缩媒体文件的目标路径。</font>
-2. <font style="color:rgb(32, 33, 36);">更改文件权限：</font>chmod u+x copy_media.sh
-3. <font style="color:rgb(32, 33, 36);">复制必要的文件：</font>
-    1. `./copy_media.sh all`
+1. 导航 (cd) 到下载并解压缩媒体文件的目标路径。
+2. 更改文件权限：chmod u+x copy_media.sh
+3. 复制必要的文件：
+
+1. `./copy_media.sh all`
 
 
 
 # 3 本地运行 CTS 媒体测试
+
 ## 3.1 下载
-+ [CTS 媒体 1.5](https://dl.google.com/dl/android/cts/android-cts-media-1.5.zip)
+
+- [CTS 媒体 1.5](https://dl.google.com/dl/android/cts/android-cts-media-1.5.zip)
 
 
 
 ## 3.2 设置 CTS 媒体测试
+
 ```bash
 adb push CtsMediaTestCases /sdcard/
 ```
 
 ## 3.3 运行 CTS 媒体测试
-单个模块运行（<font style="color:rgb(32, 33, 36);">SD 卡上的 CtsMediaTestCases）</font>
+
+单个模块运行（SD 卡上的 CtsMediaTestCases）
 
 ```bash
 run cts -m CtsMediaTestCases --module-arg CtsMediaTestCases:config-url:https://storage.googleapis.com/cts_media/DynamicConfig_local.json --module-arg CtsMediaTestCases:local-media-path:/tmp/android-cts-media-1.5 --shard-count 6
 ```
 
-完整运行（<font style="color:rgb(32, 33, 36);">SD 卡上的 CtsMediaTestCases）</font>
+完整运行（SD 卡上的 CtsMediaTestCases）
 
 ```bash
 run cts --module-arg CtsMediaTestCases:config-url:https://storage.googleapis.com/cts_media/DynamicConfig_local.json --module-arg CtsMediaTestCases:local-media-path:/tmp/android-cts-media-1.5 --shard-count 6
@@ -114,14 +115,14 @@ run cts --module-arg CtsMediaTestCases:config-url:https://storage.googleapis.com
 
 
 # 4 解读结果
-> 记录一下：
->
-> 根据测试结果图显示信息，找到对应测试项的测试方法，一般在项目根目录的 cts/目录下搜索对应测试项。
->
-> 根据堆栈信息、报错信息对应的代码中的报错打印，找到具体测试位置。
->
-> 根据方法代码查找对应系统中的代码或者是aosp代码。
->
+
+记录一下：
+
+根据测试结果图显示信息，找到对应测试项的测试方法，一般在项目根目录的 cts/目录下搜索对应测试项。
+
+根据堆栈信息、报错信息对应的代码中的报错打印，找到具体测试位置。
+
+根据方法代码查找对应系统中的代码或者是aosp代码。
 
 测试结果位于
 
@@ -131,20 +132,22 @@ CTS_ROOT/android-cts/results/start_time.zip
 
 测试摘要示例
 
-![1649577727564-4b3c6359-90fb-4f37-8d5d-c7419c385a7f.png](./img/ed0c9ZduSBkLKqz1/1649577727564-4b3c6359-90fb-4f37-8d5d-c7419c385a7f-487791.png)
+![img](./img/1649577727564-4b3c6359-90fb-4f37-8d5d-c7419c385a7f.png)
 
 
 
 ## 4.1 CTS 分析
+
 常规步骤：
 
-+ <font style="color:rgba(0, 0, 0, 0.75);">通跑某一模块；</font>
-+ <font style="color:rgba(0, 0, 0, 0.75);">查看测试结果；</font>
-+ <font style="color:rgba(0, 0, 0, 0.75);">对Fail项进行单跑；</font>
-+ <font style="color:rgba(0, 0, 0, 0.75);">辅助信息抓取；</font>
+- 通跑某一模块；
+- 查看测试结果；
+- 对Fail项进行单跑；
+- 辅助信息抓取；
 
-### <font style="color:rgb(79, 79, 79);">通跑某一模块</font>
-<font style="color:rgb(77, 77, 77);">以网络模块为例，通过如下测试项为例，在</font><font style="color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">cts-tradefed</font><font style="color:rgb(77, 77, 77);">交互界面输入</font><font style="color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">list m</font><font style="color:rgb(77, 77, 77);">可查看与之对应的待测模块(modules)：</font>
+### 通跑某一模块
+
+以网络模块为例，通过如下测试项为例，在cts-tradefed交互界面输入list m可查看与之对应的待测模块(modules)：
 
 ```bash
 cts-tf > list m
@@ -153,13 +156,14 @@ CtsNetTestCases
 ...
 ```
 
-<font style="color:rgb(77, 77, 77);">从中可以看到，</font><font style="color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">CtsNetTestCases</font><font style="color:rgb(77, 77, 77);">明显是网络相关的测试模块，因此执行：</font>
+从中可以看到，CtsNetTestCases明显是网络相关的测试模块，因此执行：
 
 ```java
 cts-tf > run cts -m CtsNetTestCases
 ```
 
-### <font style="color:rgb(79, 79, 79);">查看测试结果</font>
+### 查看测试结果
+
 测试结果存放目录：${cts_root}/results/
 
 
@@ -174,14 +178,16 @@ cts-tf > run cts -m CtsNetTestCases
 
 查看Fail项可直接使用浏览器打开目录下的test_result_failures.html文件即可；
 
-### <font style="color:rgb(79, 79, 79);">对Fail项进行单跑</font>
-<font style="color:rgb(77, 77, 77);">还是以CtsNetTestCases的测试结果为例，比如在</font><font style="color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">test_result_failures.html</font><font style="color:rgb(77, 77, 77);">中显示，如下这项测试Fail：</font>
+### 对Fail项进行单跑
+
+还是以CtsNetTestCases的测试结果为例，比如在test_result_failures.html中显示，如下这项测试Fail：
 
 ```bash
 cts-tf > run cts -m CtsNetTestCases -t android.net.cts.ConnectivityManagerTest#testConnectivityChanged_manifestRequestOnlyPreN_shouldReceiveIntent
 ```
 
-### <font style="color:rgb(79, 79, 79);">辅助信息抓取</font>
+### 辅助信息抓取
+
 以上面提到的android.net.cts.ConnectivityManagerTest#testConnectivityChanged_manifestRequestOnlyPreN_shouldReceiveIntent测试项为例，通过测试项名称，可以快速定位到源码中对应的代码：
 
 ```java
@@ -189,16 +195,16 @@ cts-tf > run cts -m CtsNetTestCases -t android.net.cts.ConnectivityManagerTest#t
 方法名：testConnectivityChanged_manifestRequestOnlyPreN_shouldReceiveIntent
 ```
 
-<font style="color:rgb(77, 77, 77);">注意：</font>_<font style="color:rgb(77, 77, 77);">源码中的代码并不一定与当前CTS版本完全一致，只能作为参考，若需要获取完全对应的，可下载AOSP源码，并checkout到对应的分支（tag）后，使用同样方法查看代码；</font>_
+注意：*源码中的代码并不一定与当前CTS版本完全一致，只能作为参考，若需要获取完全对应的，可下载AOSP源码，并checkout到对应的分支（tag）后，使用同样方法查看代码；*
 
-<font style="color:rgb(77, 77, 77);">通过查找，可知ConnectivityManagerTest类在这里：</font>  
+通过查找，可知ConnectivityManagerTest类在这里：
  
 
 ```java
 cts/tests/tests/net/src/android/net/cts/ConnectivityManagerTest.java
 ```
 
-<font style="color:rgb(77, 77, 77);">结合</font><font style="color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">cts-tradefed</font><font style="color:rgb(77, 77, 77);">交互界面的异常栈信息：</font>
+结合cts-tradefed交互界面的异常栈信息：
 
 ```java
 12-29 10:03:34 I/ConsoleReporter: [1/1 arm64-v8a CtsNetTestCases 1234567] android.net.cts.ConnectivityManagerTest#testConnectivityChanged_manifestRequestOnlyPreN_shouldReceiveIntent fail: junit.framework.AssertionFailedError
@@ -226,8 +232,8 @@ cts/tests/tests/net/src/android/net/cts/ConnectivityManagerTest.java
     at java.lang.Thread.run(Thread.java:764)
 ```
 
-<font style="color:rgb(77, 77, 77);">可知问题发生在</font><font style="color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">android.net.cts.ConnectivityManagerTest.testHttpRequest</font><font style="color:rgb(77, 77, 77);">（同理，行数参考意义不大，重点关注方法调用即可）</font>  
-<font style="color:rgb(77, 77, 77);">从而快速定位到Fail的原因：</font>
+可知问题发生在android.net.cts.ConnectivityManagerTest.testHttpRequest（同理，行数参考意义不大，重点关注方法调用即可）
+从而快速定位到Fail的原因：
 
 ```java
     private void testHttpRequest(Socket s) throws IOException {
@@ -278,7 +284,7 @@ cts/tests/tests/net/src/android/net/cts/ConnectivityManagerTest.java
     }
 ```
 
-<font style="color:rgba(0, 0, 0, 0.75);">然后再进行一次单跑，同时抓取logcat日志：</font>
+然后再进行一次单跑，同时抓取logcat日志：
 
 ```java
 12-29 11:13:40.348 I/ConnectivityManagerTest(26037): Network type: 1 state: CONNECTED
@@ -300,9 +306,4 @@ cts/tests/tests/net/src/android/net/cts/ConnectivityManagerTest.java
 12-29 11:13:40.433 I/TestRunner(26037): 	at android.net.cts.ConnectivityManagerTest.testConnectivityChanged_manifestRequestOnlyPreN_shouldReceiveIntent(ConnectivityManagerTest.java:634)
 ```
 
-<font style="color:rgb(77, 77, 77);">可见此处请求返回码期望为204，返回头期望为</font><font style="color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">"HTTP/1.0 204 No Content"</font><font style="color:rgb(77, 77, 77);">，但实际返回</font><font style="color:rgb(199, 37, 78);background-color:rgb(249, 242, 244);">"HTTP/1.0 403 Forbidden"</font>
-
-
-
-> 更新: 2024-09-08 23:18:08  
-> 原文: <https://www.yuque.com/zhangxiaofani4cu/xih3ez/eqoyg2>
+可见此处请求返回码期望为204，返回头期望为"HTTP/1.0 204 No Content"，但实际返回"HTTP/1.0 403 Forbidden"
