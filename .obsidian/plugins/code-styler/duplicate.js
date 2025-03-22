@@ -2276,7 +2276,7 @@ var settingsUpdaters = {
   "1.1.5": settingsPreserve,
   "1.1.6": settingsPreserve
 };
-var FOLD_PLACEHOLDER = "折叠代码";
+var FOLD_PLACEHOLDER = "Folded Code";
 var PARAMETERS = ["title", "fold", "ln", "wrap", "unwrap", "ignore"];
 var TRANSITION_LENGTH = 240;
 var SPECIAL_LANGUAGES = ["^reference$", "^foofoo", "^preview$", "^include$", "^output$", "^run-.+$"];
@@ -4485,9 +4485,9 @@ var Ft = function() {
 
 // src/SettingsTab.ts
 var SETTINGS_PAGES = {
-  "main": "核心设置",
-  "codeblock": "代码块样式",
-  "inline": "内联代码样式"
+  "main": "Core Settings",
+  "codeblock": "Codeblock Styling",
+  "inline": "Inline Code Styling"
 };
 var CODEBLOCK_PAGES = {
   "body": "Codeblock Body",
@@ -4561,7 +4561,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
   // Create Settings Groups
   emptySettings(containerEl) {
     containerEl.empty();
-    containerEl.createEl("h1", { text: "代码样式器插件设置（Fendi 2024-09-24 汉化）" });
+    containerEl.createEl("h1", { text: "Settings for the Code Styler Plugin." });
   }
   generateSettings(containerEl) {
     if (this.page === "main")
@@ -4572,13 +4572,13 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
       this.displayInlineCodeSettings(containerEl);
   }
   generateSettingsSwitcher(containerEl) {
-    new import_obsidian.Setting(containerEl).setName("选择设置页面").setDesc("更改下拉菜单以修改不同的设置组").addDropdown((dropdown) => dropdown.addOptions(SETTINGS_PAGES).setValue(this.page).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Choose Settings Page").setDesc("Change dropdown to modify different groups of settings").addDropdown((dropdown) => dropdown.addOptions(SETTINGS_PAGES).setValue(this.page).onChange((value) => {
       this.page = value;
       this.generateSettings(containerEl);
     }));
   }
   generateCodeblockStylingSwitcher(containerEl) {
-    new import_obsidian.Setting(containerEl).setName("选择代码块设置").setDesc("更改下拉菜单以修改不同代码块部分的样式和设置").addDropdown((dropdown) => dropdown.addOptions(CODEBLOCK_PAGES).setValue(this.codeblockPage).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Choose Codeblock Settings").setDesc("Change dropdown to modify styles and settings of different codeblock sections").addDropdown((dropdown) => dropdown.addOptions(CODEBLOCK_PAGES).setValue(this.codeblockPage).onChange((value) => {
       this.codeblockPage = value;
       this.generateCodeblockSetting();
     }));
@@ -4601,15 +4601,15 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
       this.generateExampleCodeblockSettings(this.codeblockSettingEl);
   }
   generateCoreSettings(containerEl) {
-    new import_obsidian.Setting(containerEl).setName("导出时的样式代码").setDesc("如果启用，导出到 PDF 时将应用样式。").addToggle((toggle) => toggle.setValue(this.plugin.settings.decoratePrint).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Style Code on Export").setDesc("If enabled, styling will be applied when exporting to PDF.").addToggle((toggle) => toggle.setValue(this.plugin.settings.decoratePrint).onChange((value) => {
       this.plugin.settings.decoratePrint = value;
       this.saveSettings();
     }));
   }
   generateThemeSettings(containerEl) {
-    containerEl.createEl("h2", { text: "主题设置" });
+    containerEl.createEl("h2", { text: "Theme Settings" });
     let themeDropdown;
-    new import_obsidian.Setting(containerEl).setName("选择主题").addDropdown((dropdown) => {
+    new import_obsidian.Setting(containerEl).setName("Select Theme").addDropdown((dropdown) => {
       themeDropdown = dropdown;
       this.updateDropdown(themeDropdown, this.plugin.settings);
       themeDropdown.onChange((value) => {
@@ -4649,8 +4649,8 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     let newThemeName;
     let newThemeDefault;
     this.plugin.settings.newTheme = "";
-    new import_obsidian.Setting(containerEl).setName("添加新主题").setDesc("根据当前设置创建新主题。").addText((text2) => {
-      newThemeName = text2.setPlaceholder("新主题名称").setValue(this.plugin.settings.newTheme).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Add New Theme").setDesc("Create a new theme from the current settings.").addText((text2) => {
+      newThemeName = text2.setPlaceholder("New theme name").setValue(this.plugin.settings.newTheme).onChange((value) => {
         this.plugin.settings.newTheme = value;
       });
     }).addExtraButton((button) => {
@@ -4681,8 +4681,8 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     });
   }
   generateCodeblockBodySettings(containerEl) {
-    containerEl.createEl("h3", { text: "代码块外观" });
-    new import_obsidian.Setting(containerEl).setName("代码块背景颜色").then((setting) => {
+    containerEl.createEl("h3", { text: "Codeblock Appearance" });
+    new import_obsidian.Setting(containerEl).setName("Codeblock Background Colour").then((setting) => {
       this.createPickr(
         this.plugin,
         containerEl,
@@ -4694,7 +4694,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         }
       );
     });
-    new import_obsidian.Setting(containerEl).setName("代码块文本颜色").then((setting) => {
+    new import_obsidian.Setting(containerEl).setName("Codeblock Text Colour").then((setting) => {
       this.createPickr(
         this.plugin,
         containerEl,
@@ -4706,7 +4706,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         }
       );
     });
-    new import_obsidian.Setting(containerEl).setName("代码块曲率").setDesc("确定代码块的四舍五入显示方式(以像素为单位)。").then((setting) => {
+    new import_obsidian.Setting(containerEl).setName("Codeblock Curvature").setDesc("Determines how rounded the codeblocks appear in pixels.").then((setting) => {
       let resettableSlider;
       setting.addSlider((slider) => {
         resettableSlider = slider.setLimits(0, 25, 1).setValue(this.plugin.settings.currentTheme.settings.codeblock.curvature).setDynamicTooltip().onChange((value) => {
@@ -4722,7 +4722,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         });
       });
     });
-    new import_obsidian.Setting(containerEl).setName("语言彩色边框").setDesc("如果启用，带有图标的语言将显示与图标颜色相同的左边框。滑块设置边框的宽度。").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.advanced.languageBorderColour).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Language Coloured Borders").setDesc("If enabled, languages with icons display a left border with the colour of the icon. The slider sets the width of the border.").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.advanced.languageBorderColour).onChange((value) => {
       this.plugin.settings.currentTheme.settings.advanced.languageBorderColour = value;
       this.disableableComponents["languageBorderColour"].forEach((component) => {
         component.setDisabled(!value);
@@ -4747,7 +4747,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         this.disableableComponents["languageBorderColour"].push(resetButton);
       });
     });
-    new import_obsidian.Setting(containerEl).setName("展开代码块行").setDesc("选择是否在读取模式下展开线条").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.codeblock.unwrapLines).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Unwrap codeblock lines").setDesc("Choose whether to unwrap lines in reading mode").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.codeblock.unwrapLines).onChange((value) => {
       this.plugin.settings.currentTheme.settings.codeblock.unwrapLines = value;
       this.generateWrapLineSettings();
       this.saveSettings(true);
@@ -4759,14 +4759,14 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     this.wrapLinesContainer.empty();
     if (!this.plugin.settings.currentTheme.settings.codeblock.unwrapLines)
       return;
-    new import_obsidian.Setting(this.wrapLinesContainer).setName("单击时换行").setDesc("如果启用，在阅读模式下，按住代码块将换行以获得更好的可见性。").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.codeblock.wrapLinesActive).setDisabled(!this.plugin.settings.currentTheme.settings.codeblock.unwrapLines).onChange((value) => {
+    new import_obsidian.Setting(this.wrapLinesContainer).setName("Wrap Lines on Click").setDesc("If enabled, in reading mode, holding click on a codeblock will wrap the lines for better visibility.").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.codeblock.wrapLinesActive).setDisabled(!this.plugin.settings.currentTheme.settings.codeblock.unwrapLines).onChange((value) => {
       this.plugin.settings.currentTheme.settings.codeblock.wrapLinesActive = value;
       this.saveSettings(true);
     }));
   }
   generateCodeblockGutterSettings(containerEl) {
-    containerEl.createEl("h3", { text: "排水沟外观" });
-    new import_obsidian.Setting(containerEl).setName("启用行号").setDesc("如果禁用，以下设置也将被禁用。").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.codeblock.lineNumbers).onChange((value) => {
+    containerEl.createEl("h3", { text: "Gutter Appearance" });
+    new import_obsidian.Setting(containerEl).setName("Enable Line Numbers").setDesc("If disabled, the below settings are disabled too.").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.codeblock.lineNumbers).onChange((value) => {
       this.plugin.settings.currentTheme.settings.codeblock.lineNumbers = value;
       this.generateCodeblockLineNumberSettings();
       this.saveSettings(true);
@@ -4778,7 +4778,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     this.lineNumbersContainer.empty();
     if (!this.plugin.settings.currentTheme.settings.codeblock.lineNumbers)
       return;
-    new import_obsidian.Setting(this.lineNumbersContainer).setName("檐沟背景颜色").then((setting) => {
+    new import_obsidian.Setting(this.lineNumbersContainer).setName("Gutter Background Colour").then((setting) => {
       this.createPickr(
         this.plugin,
         this.lineNumbersContainer,
@@ -4790,7 +4790,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         }
       );
     });
-    new import_obsidian.Setting(this.lineNumbersContainer).setName("行号颜色").then((setting) => {
+    new import_obsidian.Setting(this.lineNumbersContainer).setName("Line Number Colour").then((setting) => {
       this.createPickr(
         this.plugin,
         this.lineNumbersContainer,
@@ -4802,11 +4802,11 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         }
       );
     });
-    new import_obsidian.Setting(this.lineNumbersContainer).setName("突出显示行号").setDesc("如果启用，高亮显示还会高亮显示行号。").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.gutter.highlight).setDisabled(!this.plugin.settings.currentTheme.settings.codeblock.lineNumbers).onChange((value) => {
+    new import_obsidian.Setting(this.lineNumbersContainer).setName("Highlight Line Numbers").setDesc("If enabled, highlights will also highlight the line numbers.").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.gutter.highlight).setDisabled(!this.plugin.settings.currentTheme.settings.codeblock.lineNumbers).onChange((value) => {
       this.plugin.settings.currentTheme.settings.gutter.highlight = value;
       this.saveSettings();
     }));
-    new import_obsidian.Setting(this.lineNumbersContainer).setName("指示当前行号").setDesc("如果启用，代码块中的当前行号将用单独的颜色指示。").setClass("code-styler-spaced").addToggle(
+    new import_obsidian.Setting(this.lineNumbersContainer).setName("Indicate Current Line Number").setDesc("If enabled, the current line number in codeblocks will be indicated with a separate colour.").setClass("code-styler-spaced").addToggle(
       (toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.gutter.activeLine).setDisabled(!this.plugin.settings.currentTheme.settings.codeblock.lineNumbers).onChange((value) => {
         this.plugin.settings.currentTheme.settings.gutter.activeLine = value;
         this.saveSettings();
@@ -4825,8 +4825,8 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     });
   }
   generateCodeblockHeaderSettings(containerEl) {
-    containerEl.createEl("h3", { text: "页眉外观" });
-    new import_obsidian.Setting(containerEl).setName("页眉背景颜色").then((setting) => {
+    containerEl.createEl("h3", { text: "Header Appearance" });
+    new import_obsidian.Setting(containerEl).setName("Header Background Colour").then((setting) => {
       this.createPickr(
         this.plugin,
         containerEl,
@@ -4838,7 +4838,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         }
       );
     });
-    new import_obsidian.Setting(containerEl).setName("页眉字体大小").setDesc("设置标题语言标记和标题的字体大小。").then((setting) => {
+    new import_obsidian.Setting(containerEl).setName("Header Font Size").setDesc("Set the font size for header language tags and titles.").then((setting) => {
       let resettableSlider;
       setting.addSlider((slider) => {
         resettableSlider = slider.setLimits(6, 32, 1).setValue(this.plugin.settings.currentTheme.settings.header.fontSize).setDynamicTooltip().onChange((value) => {
@@ -4854,7 +4854,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         });
       });
     });
-    new import_obsidian.Setting(containerEl).setName("页眉标题文本样式").setDesc("通过设置字体或设置文本颜色，使用粗体和斜体切换设置标题文本的样式。").addToggle((toggle) => {
+    new import_obsidian.Setting(containerEl).setName("Header Title Text Styling").setDesc("Style the header title text using bold and italic toggles, by setting a font or by setting a text colour.").addToggle((toggle) => {
       toggle.setTooltip("Toggle bold title text").setValue(this.plugin.settings.currentTheme.settings.header.title.textBold).onChange((value) => {
         this.plugin.settings.currentTheme.settings.header.title.textBold = value;
         this.saveSettings();
@@ -4883,13 +4883,13 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     });
     let foldPlaceholderTimeout = setTimeout(() => {
     });
-    new import_obsidian.Setting(containerEl).setName("折叠占位符文本").setDesc("未设置标题参数时折叠代码的标题占位符文本。").addText((text2) => text2.setPlaceholder(FOLD_PLACEHOLDER).setValue(this.plugin.settings.currentTheme.settings.header.foldPlaceholder).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Fold Placeholder Text").setDesc("Title placeholder text for folded code when no title parameter is set.").addText((text2) => text2.setPlaceholder(FOLD_PLACEHOLDER).setValue(this.plugin.settings.currentTheme.settings.header.foldPlaceholder).onChange((value) => {
       this.plugin.settings.currentTheme.settings.header.foldPlaceholder = value;
       this.saveSettings();
       clearTimeout(foldPlaceholderTimeout);
       foldPlaceholderTimeout = setTimeout(() => this.rerender(), 1e3);
     }));
-    new import_obsidian.Setting(containerEl).setName("收割台分隔符颜色").setDesc("分隔代码块标头和代码块的行的颜色。").then((setting) => {
+    new import_obsidian.Setting(containerEl).setName("Header Separator Colour").setDesc("Colour of the line separating the codeblock header and the codeblock.").then((setting) => {
       this.createPickr(
         this.plugin,
         containerEl,
@@ -4901,16 +4901,16 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         }
       );
     });
-    containerEl.createEl("h5", { text: "标题语言标记外观" });
-    new import_obsidian.Setting(containerEl).setName("显示标题语言标记").setDesc('确定何时在页眉中显示语言标记。只有在设置了 Title 参数时，"Title Only"才会显示语言标记。').addDropdown((dropdown) => dropdown.addOptions(DISPLAY_OPTIONS).setValue(this.plugin.settings.currentTheme.settings.header.languageTag.display).onChange((value) => {
+    containerEl.createEl("h5", { text: "Header Language Tag Appearance" });
+    new import_obsidian.Setting(containerEl).setName("Display Header Language Tags").setDesc('Determine when to show language tags in the header. "Title Only" will only show language tags when the title parameter is set.').addDropdown((dropdown) => dropdown.addOptions(DISPLAY_OPTIONS).setValue(this.plugin.settings.currentTheme.settings.header.languageTag.display).onChange((value) => {
       this.plugin.settings.currentTheme.settings.header.languageTag.display = value;
       this.generateHeaderTagSettings();
       this.saveSettings(true);
     }));
     this.headerTagsContainer = containerEl.createDiv();
     this.generateHeaderTagSettings();
-    containerEl.createEl("h5", { text: "标题语言图标外观" });
-    new import_obsidian.Setting(containerEl).setName("显示标题语言图标").setDesc('确定何时显示可用的语言图标。只有在设置了 Title 参数时，"Title Only"才会显示语言标记。').addDropdown((dropdown) => dropdown.addOptions(DISPLAY_OPTIONS).setValue(this.plugin.settings.currentTheme.settings.header.languageIcon.display).onChange((value) => {
+    containerEl.createEl("h5", { text: "Header Language Icon Appearance" });
+    new import_obsidian.Setting(containerEl).setName("Display Header Language Icons").setDesc('Determine when to show language icons where available. "Title Only" will only show language tags when the title parameter is set.').addDropdown((dropdown) => dropdown.addOptions(DISPLAY_OPTIONS).setValue(this.plugin.settings.currentTheme.settings.header.languageIcon.display).onChange((value) => {
       this.plugin.settings.currentTheme.settings.header.languageIcon.display = value;
       this.generateHeaderLanguageIconSettings();
       this.saveSettings(true);
@@ -4924,7 +4924,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     this.headerTagsContainer.empty();
     if (this.plugin.settings.currentTheme.settings.header.languageTag.display === "none")
       return;
-    new import_obsidian.Setting(this.headerTagsContainer).setName("标题语言标签背景颜色").then((setting) => {
+    new import_obsidian.Setting(this.headerTagsContainer).setName("Header Language Tag Background Colour").then((setting) => {
       this.createPickr(
         this.plugin,
         this.headerTagsContainer,
@@ -4936,7 +4936,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         }
       );
     });
-    new import_obsidian.Setting(this.headerTagsContainer).setName("标题语言标记文本样式").setDesc("通过设置字体或设置文本颜色，使用粗体和斜体切换设置标题语言标记文本的样式。").addToggle((toggle) => toggle.setTooltip("Toggle bold language tag text").setValue(this.plugin.settings.currentTheme.settings.header.languageTag.textBold).setDisabled(this.plugin.settings.currentTheme.settings.header.languageTag.display === "none").onChange((value) => {
+    new import_obsidian.Setting(this.headerTagsContainer).setName("Header Language Tag Text Styling").setDesc("Style the header language tag text using bold and italic toggles, by setting a font or by setting a text colour.").addToggle((toggle) => toggle.setTooltip("Toggle bold language tag text").setValue(this.plugin.settings.currentTheme.settings.header.languageTag.textBold).setDisabled(this.plugin.settings.currentTheme.settings.header.languageTag.display === "none").onChange((value) => {
       this.plugin.settings.currentTheme.settings.header.languageTag.textBold = value;
       this.saveSettings();
     })).addToggle((toggle) => toggle.setTooltip("Toggle italic language tag text").setValue(this.plugin.settings.currentTheme.settings.header.languageTag.textItalic).setDisabled(this.plugin.settings.currentTheme.settings.header.languageTag.display === "none").onChange((value) => {
@@ -4962,11 +4962,11 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     this.headerIconsContainer.empty();
     if (this.plugin.settings.currentTheme.settings.header.languageIcon.display === "none")
       return;
-    new import_obsidian.Setting(this.headerIconsContainer).setName("彩色语言图标").setDesc("如果禁用，语言图标将为黑色和白色。").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.header.languageIcon.displayColour).setDisabled(this.plugin.settings.currentTheme.settings.header.languageIcon.display === "none").onChange((value) => {
+    new import_obsidian.Setting(this.headerIconsContainer).setName("Language Icons Coloured").setDesc("If disabled, language icons will be black and white.").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.header.languageIcon.displayColour).setDisabled(this.plugin.settings.currentTheme.settings.header.languageIcon.display === "none").onChange((value) => {
       this.plugin.settings.currentTheme.settings.header.languageIcon.displayColour = value;
       this.saveSettings();
     }));
-    new import_obsidian.Setting(this.headerIconsContainer).setName("语言图标大小").setDesc("设置显示的语言图标的大小。").then((setting) => {
+    new import_obsidian.Setting(this.headerIconsContainer).setName("Language Icon Size").setDesc("Set the size of the displayed language icons.").then((setting) => {
       let resettableSlider;
       setting.addSlider((slider) => {
         resettableSlider = slider.setLimits(10, 40, 1).setValue(this.plugin.settings.currentTheme.settings.advanced.iconSize).setDisabled(this.plugin.settings.currentTheme.settings.header.languageIcon.display === "none").setDynamicTooltip().onChange((value) => {
@@ -5034,8 +5034,8 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     });
   }
   generateCodeblockHighlightSettings(containerEl) {
-    containerEl.createEl("h3", { text: "突出显示外观" });
-    new import_obsidian.Setting(containerEl).setName("代码块活动行突出显示").setDesc("如果启用，则高亮显示代码块内的活动行。").setClass("code-styler-spaced").addToggle((toggle) => {
+    containerEl.createEl("h3", { text: "Highlighting Appearance" });
+    new import_obsidian.Setting(containerEl).setName("Codeblock Active Line Highlight").setDesc("If enabled, highlights the active line inside codeblocks.").setClass("code-styler-spaced").addToggle((toggle) => {
       return toggle.setValue(this.plugin.settings.currentTheme.settings.highlights.activeCodeblockLine).onChange((value) => {
         this.plugin.settings.currentTheme.settings.highlights.activeCodeblockLine = value;
         this.disableableComponents["codeblockActiveLineHighlight"].forEach((component) => {
@@ -5057,7 +5057,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
       );
     });
     this.disableableComponents["codeblockActiveLineHighlight"].push(this.pickrs["codeblock_active_line_highlight"].resetButton);
-    new import_obsidian.Setting(containerEl).setName("默认突出显示颜色").setDesc("由'hl'参数使用。").then((setting) => {
+    new import_obsidian.Setting(containerEl).setName("Default Highlight Colour").setDesc("Used by the 'hl' parameter.").then((setting) => {
       this.createPickr(
         this.plugin,
         containerEl,
@@ -5070,7 +5070,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
       );
     });
     let newHighlightText;
-    new import_obsidian.Setting(containerEl).setName("添加备选突出显示").setDesc("定义一个新的备选高亮显示名称。添加后可以修改颜色。").addText((value) => {
+    new import_obsidian.Setting(containerEl).setName("Add Alternative Highlight").setDesc("Define a new alternative highlight name. The colour can be modified after it is added.").addText((value) => {
       newHighlightText = value.setPlaceholder("e.g. error, warn").onChange((value2) => {
         this.plugin.settings.newHighlight = value2;
       });
@@ -5101,7 +5101,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     });
     this.alternativeHighlightsContainer = containerEl.createDiv();
     this.updateAlternativeHighlights();
-    new import_obsidian.Setting(containerEl).setName("渐变高亮显示").setDesc("如果启用，高亮显示将向右逐渐消失。滑块将渐变色停止设置为百分比。").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.advanced.gradientHighlights).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Gradient Highlighting").setDesc("If enabled, highlights fade away to the right. The slider sets the gradient colour stop as a percentage.").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.advanced.gradientHighlights).onChange((value) => {
       this.plugin.settings.currentTheme.settings.advanced.gradientHighlights = value;
       this.disableableComponents["gradientHighlighting"].forEach((component) => {
         component.setDisabled(!value);
@@ -5130,7 +5130,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
   generateCodeblockLanguageSettings(containerEl) {
     let excludeTimeout = setTimeout(() => {
     });
-    new import_obsidian.Setting(containerEl).setName("排除语言").setDesc("在逗号分隔的列表中定义插件不应该修饰的语言。您可以在开头或结尾使用通配符(*)。例如:ad-*将排除语言以 ad 开头的代码块，例如:ad info, ad error 等。").addText((text2) => text2.setPlaceholder(`e.g. ${EXCLUDED_LANGUAGES} etc.`).setValue(this.plugin.settings.excludedLanguages).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Exclude Languages").setDesc("Define languages in a comma separated list which the plugin should not decorate. You can use a wildcard (*) either at the beginning, or at the end. For example: ad-* will exclude codeblocks where the language starts with ad- e.g.: ad-info, ad-error etc.").addText((text2) => text2.setPlaceholder(`e.g. ${EXCLUDED_LANGUAGES} etc.`).setValue(this.plugin.settings.excludedLanguages).onChange((value) => {
       this.plugin.settings.excludedLanguages = value;
       this.saveSettings();
       clearTimeout(excludeTimeout);
@@ -5138,13 +5138,13 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     }));
     let whitelistTimeout = setTimeout(() => {
     });
-    new import_obsidian.Setting(containerEl).setName("白名单处理的代码块").setDesc("在逗号分隔的列表中定义语言，尽管插件正在被另一个插件处理，但插件应该对其进行样式设置。您可以在开头或结尾使用通配符(*)。例如:ad-*将排除语言以 ad 开头的代码块，例如:ad info, ad error 等。").addText((text2) => text2.setPlaceholder(`e.g. ${WHITELIST_CODEBLOCKS} etc.`).setValue(this.plugin.settings.processedCodeblocksWhitelist).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Whitelisted Processed Codeblocks").setDesc("Define languages in a comma separated list which the plugin should style despite being processed by another plugin. You can use a wildcard (*) either at the beginning, or at the end. For example: ad-* will exclude codeblocks where the language starts with ad- e.g.: ad-info, ad-error etc.").addText((text2) => text2.setPlaceholder(`e.g. ${WHITELIST_CODEBLOCKS} etc.`).setValue(this.plugin.settings.processedCodeblocksWhitelist).onChange((value) => {
       this.plugin.settings.processedCodeblocksWhitelist = value;
       this.saveSettings();
       clearTimeout(whitelistTimeout);
       whitelistTimeout = setTimeout(() => this.rerender(), 1e3);
     }));
-    new import_obsidian.Setting(containerEl).setName("重定向语言设置").setDesc("使用此文本框将特定语言的颜色和图标重定向为 JSON，语言名称作为键，颜色键, 图标键或两者都作为给定语言的值。颜色应该作为 CSS 颜色传递，图标应该作为 svg 元素内部的字符串传递。此设置与主题无关。").setClass("code-styler-setting-text-area").addTextArea((textArea) => textArea.setValue(JSON.stringify(this.plugin.settings.redirectLanguages) === "{}" ? "" : JSON.stringify(this.plugin.settings.redirectLanguages, null, 4)).setPlaceholder(JSON.stringify({ toml: { colour: "#012345", icon: LANGUAGES["APL"].colour } }, null, 4)).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Redirect Language Settings").setDesc("Use this textbox to redirect specific language colours and icons as a JSON with language names as keys and either a colour key, an icon key or both as the value for a given language. Colours should be passed as CSS colours and icons should be passed as a string of the inside of an svg element. This setting is theme independent.").setClass("code-styler-setting-text-area").addTextArea((textArea) => textArea.setValue(JSON.stringify(this.plugin.settings.redirectLanguages) === "{}" ? "" : JSON.stringify(this.plugin.settings.redirectLanguages, null, 4)).setPlaceholder(JSON.stringify({ toml: { colour: "#012345", icon: LANGUAGES["APL"].colour } }, null, 4)).onChange((value) => {
       if (value === "") {
         this.plugin.settings.redirectLanguages = {};
         this.saveSettings();
@@ -5160,19 +5160,19 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     }));
   }
   generateInlineCodeSettings(containerEl) {
-    containerEl.createEl("h3", { text: "内联代码外观" });
-    new import_obsidian.Setting(containerEl).setName("语法突出显示内联代码").setDesc("如果启用，在读取模式下，内联代码将基于带有 `{language} highlighted_inline_code`的语言集进行语法高亮显示。有关更多信息，请参阅自述文件。").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.inline.syntaxHighlight).onChange((value) => {
+    containerEl.createEl("h3", { text: "Inline Code Appearance" });
+    new import_obsidian.Setting(containerEl).setName("Syntax Highlight Inline Code").setDesc("If enabled, in reading mode, inline code will be syntax highlighted based on a language set with `{language} highlighted_inline_code`. See the README for more information.").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.inline.syntaxHighlight).onChange((value) => {
       this.plugin.settings.currentTheme.settings.inline.syntaxHighlight = value;
       this.saveSettings(true);
     }));
-    new import_obsidian.Setting(containerEl).setName("样式内联代码").setDesc("如果启用，内联代码将被设置样式。").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.inline.style).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Style Inline Code").setDesc("If enabled, inline code will be styled.").addToggle((toggle) => toggle.setValue(this.plugin.settings.currentTheme.settings.inline.style).onChange((value) => {
       this.plugin.settings.currentTheme.settings.inline.style = value;
       this.generateInlineCodeStyleSettings();
       this.saveSettings();
     }));
     this.inlineCodeStylesContainer = containerEl.createDiv();
     this.generateInlineCodeStyleSettings();
-    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("内联代码标题颜色").setDesc("内联代码标题的文本颜色。").then((setting) => {
+    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("Inline Code Title Colour").setDesc("The text colour of inline code titles.").then((setting) => {
       this.createPickr(
         this.plugin,
         this.inlineCodeStylesContainer,
@@ -5184,7 +5184,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         }
       );
     });
-    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("内联代码标题字体重量").setDesc("确定粗体内联代码标题的显示方式。").then((setting) => {
+    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("Inline Code Title Font Weight").setDesc("Determines how bold inline code titles appear.").then((setting) => {
       let resettableSlider;
       setting.addSlider((slider) => {
         resettableSlider = slider.setLimits(1, 9, 1).setValue(this.plugin.settings.currentTheme.settings.inline.titleFontWeight).setDynamicTooltip().onChange((value) => {
@@ -5205,7 +5205,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     this.inlineCodeStylesContainer.empty();
     if (!this.plugin.settings.currentTheme.settings.inline.style)
       return;
-    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("内联代码背景颜色").then((setting) => {
+    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("Inline Code Background Colour").then((setting) => {
       this.createPickr(
         this.plugin,
         this.inlineCodeStylesContainer,
@@ -5217,7 +5217,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         }
       );
     });
-    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("内联代码文本颜色").then((setting) => {
+    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("Inline Code Text Colour").then((setting) => {
       this.createPickr(
         this.plugin,
         this.inlineCodeStylesContainer,
@@ -5229,7 +5229,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         }
       );
     });
-    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("内联代码活动文本颜色").setDesc("编辑内联代码时的文本颜色。").then((setting) => {
+    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("Inline Code Active Text Colour").setDesc("The text colour when editing inline code.").then((setting) => {
       this.createPickr(
         this.plugin,
         this.inlineCodeStylesContainer,
@@ -5241,7 +5241,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         }
       );
     });
-    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("内联代码字体重量").setDesc("确定内联代码的粗体显示方式。").then((setting) => {
+    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("Inline Code Font Weight").setDesc("Determines how bold inline code appears.").then((setting) => {
       let resettableSlider;
       setting.addSlider((slider) => {
         resettableSlider = slider.setLimits(1, 9, 1).setValue(this.plugin.settings.currentTheme.settings.inline.fontWeight).setDynamicTooltip().onChange((value) => {
@@ -5257,7 +5257,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         });
       });
     });
-    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("内联代码曲率").setDesc("确定四舍五入的内联代码以像素显示的方式。").then((setting) => {
+    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("Inline Code Curvature").setDesc("Determines how rounded inline code appear in pixels.").then((setting) => {
       let resettableSlider;
       setting.addSlider((slider) => {
         resettableSlider = slider.setLimits(0, 12, 1).setValue(this.plugin.settings.currentTheme.settings.inline.curvature).setDynamicTooltip().onChange((value) => {
@@ -5273,7 +5273,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         });
       });
     });
-    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("内联代码垂直填充").setDesc("确定内联代码中像素的垂直内部填充量。").then((setting) => {
+    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("Inline Code Vertical Padding").setDesc("Determines how much vertical inner padding in pixels inline code has.").then((setting) => {
       let resettableSlider;
       setting.addSlider((slider) => {
         resettableSlider = slider.setLimits(0, 10, 1).setValue(this.plugin.settings.currentTheme.settings.inline.paddingVertical).setDynamicTooltip().onChange((value) => {
@@ -5289,7 +5289,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         });
       });
     });
-    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("内联代码水平填充").setDesc("确定内联代码中像素的水平内部填充量。").then((setting) => {
+    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("Inline Code Horizontal Padding").setDesc("Determines how much horizontal inner padding in pixels inline code has.").then((setting) => {
       let resettableSlider;
       setting.addSlider((slider) => {
         resettableSlider = slider.setLimits(0, 10, 1).setValue(this.plugin.settings.currentTheme.settings.inline.paddingHorizontal).setDynamicTooltip().onChange((value) => {
@@ -5305,7 +5305,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         });
       });
     });
-    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("内联代码水平边距").setDesc("确定以像素为单位向内联代码添加的水平外部边距的大小。").then((setting) => {
+    new import_obsidian.Setting(this.inlineCodeStylesContainer).setName("Inline Code Horizontal Margin").setDesc("Determines how much horizontal outer margin is added to the inline code in pixels.").then((setting) => {
       let resettableSlider;
       setting.addSlider((slider) => {
         resettableSlider = slider.setLimits(0, 8, 1).setValue(this.plugin.settings.currentTheme.settings.inline.marginHorizontal).setDynamicTooltip().onChange((value) => {
@@ -5323,7 +5323,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     });
   }
   generateAdvancedHeading(containerEl) {
-    const advancedSettingsHeading = containerEl.createEl("h2", { text: "高级设置", cls: `advanced-settings-header${this.hideAdvanced ? " header-folded" : ""}` });
+    const advancedSettingsHeading = containerEl.createEl("h2", { text: "Advanced Settings", cls: `advanced-settings-header${this.hideAdvanced ? " header-folded" : ""}` });
     advancedSettingsHeading.addEventListener("click", () => {
       this.hideAdvanced = !this.hideAdvanced;
       advancedSettingsHeading.classList.toggle("header-folded", this.hideAdvanced);
@@ -5335,7 +5335,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     if (this.hideAdvanced)
       return;
     this.generateInterfaceSettings(this.advancedSettingsContainer);
-    new import_obsidian.Setting(this.advancedSettingsContainer).setName("编辑器活动线条高亮显示").setDesc("如果启用，则高亮显示代码块外的活动行。").setClass("code-styler-spaced").addToggle((toggle) => toggle.setTooltip("Toggle editor active line highlighting").setValue(this.plugin.settings.currentTheme.settings.highlights.activeEditorLine).onChange((value) => {
+    new import_obsidian.Setting(this.advancedSettingsContainer).setName("Editor Active Line Highlight").setDesc("If enabled, highlights the active line outside codeblocks.").setClass("code-styler-spaced").addToggle((toggle) => toggle.setTooltip("Toggle editor active line highlighting").setValue(this.plugin.settings.currentTheme.settings.highlights.activeEditorLine).onChange((value) => {
       this.plugin.settings.currentTheme.settings.highlights.activeEditorLine = value;
       this.disableableComponents["editorActiveLineHighlight"].forEach((component) => {
         component.setDisabled(!value);
@@ -5354,12 +5354,12 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         () => !this.plugin.settings.currentTheme.settings.highlights.activeEditorLine
       );
     });
-    new import_obsidian.Setting(this.advancedSettingsContainer).setName("加载时自动更新外部引用").setDesc("如果启用，外部引用将在可能的情况下在加载时自动更新。").addToggle((toggle) => toggle.setTooltip("Toggle auto-update external references").setValue(this.plugin.settings.externalReferenceUpdateOnLoad).onChange((value) => {
+    new import_obsidian.Setting(this.advancedSettingsContainer).setName("External References Automatic Update on Load").setDesc("If enabled, external references will be updated automatically on load when possible.").addToggle((toggle) => toggle.setTooltip("Toggle auto-update external references").setValue(this.plugin.settings.externalReferenceUpdateOnLoad).onChange((value) => {
       this.plugin.settings.externalReferenceUpdateOnLoad = value;
       this.saveSettings();
     }));
     this.disableableComponents["editorActiveLineHighlight"].push(this.pickrs["editor_active_line_highlight"].resetButton);
-    new import_obsidian.Setting(this.advancedSettingsContainer).setName("重置内置主题").setDesc("这将使所有内置主题返回到插件默认值").addButton((button) => button.setButtonText("重置").onClick(() => {
+    new import_obsidian.Setting(this.advancedSettingsContainer).setName("Reset inbuilt themes").setDesc("This will return all inbuilt themes to the plugin defaults").addButton((button) => button.setButtonText("Reset").onClick(() => {
       Object.entries(INBUILT_THEMES).forEach(([themeName, theme]) => this.plugin.settings.themes[themeName] = structuredClone(theme));
       if (this.plugin.settings.selectedTheme in INBUILT_THEMES)
         this.plugin.settings.currentTheme = structuredClone(this.plugin.settings.themes[this.plugin.settings.selectedTheme]);
@@ -5367,7 +5367,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     }));
   }
   generateInterfaceSettings(containerEl) {
-    new import_obsidian.Setting(containerEl).setName("按钮颜色").setDesc("用于 UI 按钮，如复制代码按钮。").then((setting) => {
+    new import_obsidian.Setting(containerEl).setName("Button Colour").setDesc("Used for UI buttons like the copy code button.").then((setting) => {
       this.createPickr(
         this.plugin,
         containerEl,
@@ -5379,7 +5379,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
         }
       );
     });
-    new import_obsidian.Setting(containerEl).setName("按钮活动颜色").setDesc("激活时使用彩色按钮。").then((setting) => {
+    new import_obsidian.Setting(containerEl).setName("Button Active Colour").setDesc("Colour buttons use when activated.").then((setting) => {
       this.createPickr(
         this.plugin,
         containerEl,
@@ -5396,12 +5396,12 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     containerEl.createSpan("Needs completing");
   }
   generateExampleCodeblockSettings(containerEl) {
-    new import_obsidian.Setting(containerEl).setName("代码块参数字符串示例").setDesc("代码块分隔符后面的参数和语言。").setClass("code-styler-setting-text-wide").addText((text2) => text2.setPlaceholder(EXAMPLE_CODEBLOCK_PARAMETERS).setValue(this.plugin.settings.exampleCodeblockParameters).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Example Codeblock Parameter String").setDesc("Parameters and language which would follow codeblock delimiter.").setClass("code-styler-setting-text-wide").addText((text2) => text2.setPlaceholder(EXAMPLE_CODEBLOCK_PARAMETERS).setValue(this.plugin.settings.exampleCodeblockParameters).onChange((value) => {
       this.plugin.settings.exampleCodeblockParameters = value;
       this.saveSettings();
       this.generateExampleCodeblock();
     }));
-    new import_obsidian.Setting(containerEl).setName("代码块参数字符串示例").setDesc("内容，例如代码块。").setClass("code-styler-setting-text-area").addTextArea((textArea) => textArea.setValue(this.plugin.settings.exampleCodeblockContent).setPlaceholder(EXAMPLE_CODEBLOCK_CONTENT).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Example Codeblock Parameter String").setDesc("Content for example codeblock.").setClass("code-styler-setting-text-area").addTextArea((textArea) => textArea.setValue(this.plugin.settings.exampleCodeblockContent).setPlaceholder(EXAMPLE_CODEBLOCK_CONTENT).onChange((value) => {
       this.plugin.settings.exampleCodeblockContent = value;
       this.saveSettings();
       this.generateExampleCodeblock();
@@ -5415,7 +5415,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
     (_b = (_a2 = this.exampleCodeblockContainer.querySelector("pre > button.copy-code-button")) == null ? void 0 : _a2.classList) == null ? void 0 : _b.add("code-styler-settings-button");
   }
   generateExampleInlineCodeSettings(containerEl) {
-    new import_obsidian.Setting(containerEl).setName("内联代码示例").setDesc("要在代码分隔符内作为示例呈现的文本。").setClass("code-styler-setting-text-wide").addText((text2) => text2.setPlaceholder(EXAMPLE_INLINE_CODE).setValue(this.plugin.settings.exampleInlineCode).onChange((value) => {
+    new import_obsidian.Setting(containerEl).setName("Inline Code Example").setDesc("Text to render as example inside code delimiters.").setClass("code-styler-setting-text-wide").addText((text2) => text2.setPlaceholder(EXAMPLE_INLINE_CODE).setValue(this.plugin.settings.exampleInlineCode).onChange((value) => {
       this.plugin.settings.exampleInlineCode = value;
       this.saveSettings();
       this.generateExampleInlineCode();
@@ -5430,7 +5430,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
   generateDonationFooter(containerEl) {
     containerEl.createEl("hr");
     const donationDiv = containerEl.createEl("div", { cls: "code-styler-donation" });
-    const donationText = createEl("p", { text: "如果你喜欢这个插件，并且想帮助支持继续开发，请使用下面的按钮！" });
+    const donationText = createEl("p", { text: "If you like this plugin, and would like to help support continued development, use the button below!" });
     donationDiv.appendChild(donationText);
     const donationButton = createEl("a", { href: "https://www.buymeacoffee.com/mayurankv2" });
     donationButton.innerHTML = '<img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=mayurankv2&button_colour=e3e7efa0&font_colour=262626&font_family=Inter&outline_colour=262626&coffee_colour=a0522d" height="42px">';
@@ -5484,7 +5484,7 @@ var SettingsTab = class extends import_obsidian.PluginSettingTab {
       return;
     this.alternativeHighlightsContainer.empty();
     Object.keys(this.plugin.settings.currentTheme.colours.light.highlights.alternativeHighlights).forEach((alternativeHighlightName) => {
-      new import_obsidian.Setting(this.alternativeHighlightsContainer).setName(alternativeHighlightName).setDesc(`若要使用此高亮显示来高亮显示线条，请使用 ${alternativeHighlightName} 参数。`).then((setting) => {
+      new import_obsidian.Setting(this.alternativeHighlightsContainer).setName(alternativeHighlightName).setDesc(`To highlight lines with this highlight, use the ${alternativeHighlightName} parameter.`).then((setting) => {
         this.createPickr(
           this.plugin,
           this.alternativeHighlightsContainer,
@@ -19962,7 +19962,7 @@ var CodeStylerPlugin = class extends import_obsidian9.Plugin {
         }, 1e3);
       }
     }, this));
-    this.addCommand({ id: "fold-all", name: "折叠所有代码块", callback: () => {
+    this.addCommand({ id: "fold-all", name: "Fold all codeblocks", callback: () => {
       const activeView = this.app.workspace.getActiveViewOfType(import_obsidian9.MarkdownView);
       if (activeView) {
         if (activeView.getMode() === "preview")
@@ -19971,7 +19971,7 @@ var CodeStylerPlugin = class extends import_obsidian9.Plugin {
           editingDocumentFold(activeView.editor.cm.docView.view, true);
       }
     } });
-    this.addCommand({ id: "unfold-all", name: "展开所有代码", callback: () => {
+    this.addCommand({ id: "unfold-all", name: "Unfold all codeblocks", callback: () => {
       const activeView = this.app.workspace.getActiveViewOfType(import_obsidian9.MarkdownView);
       if (activeView) {
         if (activeView.getMode() === "preview")
@@ -19980,7 +19980,7 @@ var CodeStylerPlugin = class extends import_obsidian9.Plugin {
           editingDocumentFold(activeView.editor.cm.docView.view, false);
       }
     } });
-    this.addCommand({ id: "reset-all", name: "重置所有代码块的折叠状态", callback: () => {
+    this.addCommand({ id: "reset-all", name: "Reset fold state for all codeblocks", callback: () => {
       const activeView = this.app.workspace.getActiveViewOfType(import_obsidian9.MarkdownView);
       if (activeView) {
         if (activeView.getMode() === "preview")
