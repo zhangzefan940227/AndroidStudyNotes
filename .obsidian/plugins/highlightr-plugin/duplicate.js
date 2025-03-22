@@ -3142,14 +3142,14 @@ class HighlightrSettingTab extends obsidian.PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
         containerEl.createEl("h1", { text: "Highlightr" });
-        containerEl.createEl("p", { text: "创建于" }).createEl("a", {
+        containerEl.createEl("p", { text: "Created by " }).createEl("a", {
             text: "Chetachi 👩🏽‍💻",
             href: "https://github.com/chetachiezikeuzor",
         });
         containerEl.createEl("h2", { text: "Plugin Settings" });
         new obsidian.Setting(containerEl)
-            .setName("选择高亮方法")
-            .setDesc(`请选择使用内联 CSS 还是 CSS 类进行高亮。请注意，两种选择都有优缺点。内联 CSS 可以让你在导出笔记时不必依赖外部 CSS 文件。CSS 类更灵活且易于定制。`)
+            .setName("Choose highlight method")
+            .setDesc(`Choose between highlighting with inline CSS or CSS classes. Please note that there are pros and cons to both choices. Inline CSS will keep you from being reliant on external CSS files if you choose to export your notes. CSS classes are more flexible and easier to customize.`)
             .addDropdown((dropdown) => {
             let methods = {};
             HIGHLIGHTER_METHODS.map((method) => (methods[method] = method));
@@ -3168,8 +3168,8 @@ class HighlightrSettingTab extends obsidian.PluginSettingTab {
         });
         const stylesSetting = new obsidian.Setting(containerEl);
         stylesSetting
-            .setName("选择高亮样式")
-            .setDesc(`根据您的设计审美，您可能需要自定义高亮的样式。通过下拉菜单选择不同的高亮风格。根据您的主题，此插件的 CSS 可能会被覆盖。`)
+            .setName("Choose highlight style")
+            .setDesc(`Depending on your design aesthetic, you may want to customize the style of your highlights. Choose from an assortment of different highlighter styles by using the dropdown. Depending on your theme, this plugin's CSS may be overriden.`)
             .addDropdown((dropdown) => {
             let styles = {};
             HIGHLIGHTER_STYLES.map((style) => (styles[style] = style));
@@ -3196,14 +3196,14 @@ class HighlightrSettingTab extends obsidian.PluginSettingTab {
         stylesSetting.infoEl.appendChild(styleDemo());
         const highlighterSetting = new obsidian.Setting(containerEl);
         highlighterSetting
-            .setName("选择高亮颜色")
+            .setName("Choose highlight colors")
             .setClass("highlighterplugin-setting-item")
-            .setDesc(`通过提供颜色名称并使用颜色选择器设置十六进制代码值来创建新的高亮颜色。不要忘记在退出颜色选择器前保存颜色。拖放高亮颜色以更改高亮组件的顺序。`);
+            .setDesc(`Create new highlight colors by providing a color name and using the color picker to set the hex code value. Don't forget to save the color before exiting the color picker. Drag and drop the highlight color to change the order for your highlighter component.`);
         const colorInput = new obsidian.TextComponent(highlighterSetting.controlEl);
-        colorInput.setPlaceholder("颜色名称");
+        colorInput.setPlaceholder("Color name");
         colorInput.inputEl.addClass("highlighter-settings-color");
         const valueInput = new obsidian.TextComponent(highlighterSetting.controlEl);
-        valueInput.setPlaceholder("颜色十六进制代码");
+        valueInput.setPlaceholder("Color hex code");
         valueInput.inputEl.addClass("highlighter-settings-value");
         highlighterSetting
             .addButton((button) => {
@@ -3279,7 +3279,7 @@ class HighlightrSettingTab extends obsidian.PluginSettingTab {
                 .setClass("HighlightrSettingsButton")
                 .setClass("HighlightrSettingsButtonAdd")
                 .setIcon("highlightr-save")
-                .setTooltip("保存")
+                .setTooltip("Save")
                 .onClick((buttonEl) => __awaiter(this, void 0, void 0, function* () {
                 let color = colorInput.inputEl.value.replace(" ", "-");
                 let value = valueInput.inputEl.value;
@@ -3341,7 +3341,7 @@ class HighlightrSettingTab extends obsidian.PluginSettingTab {
                     .setClass("HighlightrSettingsButton")
                     .setClass("HighlightrSettingsButtonDelete")
                     .setIcon("highlightr-delete")
-                    .setTooltip("移除")
+                    .setTooltip("Remove")
                     .onClick(() => __awaiter(this, void 0, void 0, function* () {
                     new obsidian.Notice(`${highlighter} highlight deleted`);
                     this.app.commands.removeCommand(`highlightr-plugin:${highlighter}`);
@@ -3361,7 +3361,7 @@ class HighlightrSettingTab extends obsidian.PluginSettingTab {
             cls: "hltrDonationSection",
         });
         const donateText = createEl("p");
-        donateText.appendText("如果你喜欢这个插件并考虑捐款支持持续开发，请使用下方的按钮！");
+        donateText.appendText("If you like this Plugin and are considering donating to support continued development, use the buttons below!");
         hltrDonationDiv.appendChild(donateText);
         hltrDonationDiv.appendChild(paypalButton("https://paypal.me/chelseaezikeuzor"));
         hltrDonationDiv.appendChild(buyMeACoffeeButton("https://www.buymeacoffee.com/chetachi"));

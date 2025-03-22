@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "5 Android/5.3 UI/Fragment.md",
+                "file": "1 计算机基础/操作系统.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Fragment"
+              "title": "操作系统"
             }
           }
         ]
@@ -142,13 +142,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "5 Android/5.3 UI/Fragment.md",
+                "file": "1 计算机基础/操作系统.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Fragment 的大纲"
+              "title": "操作系统 的大纲"
             }
           }
         ],
@@ -167,38 +167,41 @@
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
       "command-palette:打开命令面板": false,
-      "markdown-importer:打开 Markdown 格式转换器": false
+      "markdown-importer:打开 Markdown 格式转换器": false,
+      "obsidian42-brat:BRAT": false,
+      "i18n:I18N": false
     }
   },
   "active": "6c3d24427c23b495",
   "lastOpenFiles": [
+    "1 计算机基础/img/c79ea6195dcbce912c170212f36c6cea_MD5.webp",
+    "1 计算机基础/img/d5b6f392bbb68b95b1355aacb2fcdfff_MD5.webp",
+    "1 计算机基础/img/3900284d9726cbcdbe7e7d3eb6fce83b_MD5.webp",
+    "1 计算机基础/img/e945e76917949db61cacd0b7d7fa6469_MD5.webp",
+    "1 计算机基础/img/02246f220749f015f4785d38a61fd30c_MD5.webp",
+    "1 计算机基础/img/操作系统.webp",
+    "1 计算机基础/img/Pasted image 20250322115843.png",
+    "1 计算机基础/img/Pasted image 20250322115824.png",
+    "1 计算机基础/img/Pasted image 20250322115532.png",
+    "1 计算机基础/img/Pasted image 20250322115522.png",
+    "1 计算机基础/1.1 计算机网络/计算机网络模型.md",
+    "5 Android/5.3 UI/Fragment.md",
     "5 Android/5.3 UI/属性动画.md",
     "5 Android/5.3 UI/View体系.md",
     "5 Android/5.3 UI/WebView.md",
     "5 Android/5.3 UI/img/7b95d09796ea2ad798fdf6bfd73c67d2_MD5.jpg",
-    "5 Android/5.3 UI/img/6e9b071a420b7bd4e29cbe850221e41f_MD5.webp",
-    "5 Android/5.3 UI/Fragment.md",
     "5 Android/5.2 持久化/Room数据库框架.md",
     "5 Android/5.2 持久化/持久化技术.md",
     "5 Android/5.1 四大组件/Service.md",
-    "5 Android/5.1 四大组件/img/7881134785fb436f6ff305ef6a501b3d_MD5.png",
-    "5 Android/5.1 四大组件/img/70e651a9e797de69a4d2a796c5c8e5dd_MD5.png",
-    "5 Android/5.1 四大组件/img/fecbe380dc850372f8ca717dab8488d9_MD5.png",
     "5 Android/5.1 四大组件/ContentProvider.md",
     "5 Android/5.1 四大组件/Broadcast.md",
     "5 Android/5.1 四大组件/Activity.md",
-    "5 Android/5.1 四大组件/img/e92cdaa93201137f2c5ecf88dbebcc91_MD5.png",
-    "5 Android/5.1 四大组件/img/4eba43fbfadc57b13657e6b5d16545fc_MD5.png",
-    "5 Android/5.1 四大组件/img/ebbf5ebd6c299170d9841e5b79fe8572_MD5.png",
-    "5 Android/5.1 四大组件/img/a824523c89a69a9724d4200f6ed84ee9_MD5.png",
-    "5 Android/5.1 四大组件/img/f4bb039046772bd06d983a9973d0c2e9_MD5.png",
     "5 Android/5.1 四大组件/img",
     "1 计算机基础/操作系统.md",
     "index.md",
     "4 Java/4.2 进阶/JVM和垃圾回收.md",
     "4 Java/4.1 基础/时序图和类图.md",
     "3 数据结构和算法/3.1 时间、空间复杂度分析.md",
-    "1 计算机基础/1.1 计算机网络/计算机网络模型.md",
     "4 Java/4.2 进阶/集合.md",
     "4 Java/4.2 进阶/并发锁.md",
     "4 Java/4.2 进阶/I_O系统.md",
@@ -208,7 +211,6 @@
     "4 Java/4.1 基础/类加载顺序.md",
     "4 Java/4.1 基础/反射和动态代理.md",
     "3 数据结构和算法/3.7 贪心算法.md",
-    "3 数据结构和算法/3.6 环形队列实例.md",
     "4 Java/4.2 进阶/img",
     "4 Java/4.1 基础",
     "4 Java/4.1 基础/img",

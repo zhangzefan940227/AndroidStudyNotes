@@ -16,7 +16,7 @@
   "includepattern": "(?<md>.*\\.md)|(?<canvas>.*\\.canvas)",
   "mediaRootDir": "_resources/${notename}",
   "disAddCom": true,
-  "useMD5ForNewAtt": false,
+  "useMD5ForNewAtt": true,
   "removeMediaFolder": true,
   "removeOrphansCompl": false,
   "PngToJpeg": false,
