@@ -1,7 +1,3 @@
-![null](https://s2.loli.net/2023/07/30/E3kQgAYecmSj7Jo.png)
-
-# Kotlin程序设计中级篇
-
 我们在前面已经学习了Kotlin程序设计的基础篇，本章我们将继续介绍更多Kotlin特性，以及面向对象编程。
 
 ## 函数
@@ -347,7 +343,7 @@ fun test(){
 
 肯定会有小伙伴疑问，函数自己调用自己有什么意义？反而还会导致函数无限的调用下去，无穷无尽，确实，如果不加限制地让函数自己调用自己：
 
-![null](https://s2.loli.net/2023/08/21/JhKSzY9TvfXBqGr.png)
+![null](./img/JhKSzY9TvfXBqGr-1742648819902-1.png)
 
 就会出现这种`爆栈`的情况，这是因为程序的内存是有限的，不可能无限制的继续调用下去，因此，在自我调用到一定的深度时，会被强制终止。所以说这玩意有啥用呢？如果我们对递归函数加以一些限制，或许会有意想不到的发现：
 
@@ -535,6 +531,7 @@ var func1: (Double, Double) -> String   //同理，代表两个Double参数返�
 fun test(other: (Int) -> String){
 }
 
+//other方法，有个Int类型参数，返回String
 fun test(other: (Int) -> String){
     println(other(1))  //这里提供的函数接受一个Int参数返回string，那么我们可以像普通函数一样传入参数调用它
 }
@@ -784,7 +781,7 @@ inline fun test(func: (String) -> Unit){
 
 上述代码的运行结果就是，直接结束，两句println都不会打印，这种情况被称为**非局部返回**。
 
-回到上一节最后我们提出的问题，实际上，在Kotlin中Lambda表达式支持一个叫做"标签返回"（labeled return）的特性，这使得你能够从一个Lambda表达式中返回一个值给外围函数，而不是简单地返回给Lambda表达式所在的最近的封闭函数，就像下面这样：
+回到上一节最后我们提出的问题，实际上，在Kotlin中Lambda表达式支持一个叫做"标签返回"（labeled return）的特性，这使得你能够从一个Lambda表达式中返回一个值给外围函数，b而不是简单地返回给Lambda表达式所在的最近的封闭函数，就像下面这样：
 
 ```kotlin
 fun main() {

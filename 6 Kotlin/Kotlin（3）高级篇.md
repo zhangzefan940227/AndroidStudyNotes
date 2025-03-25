@@ -52,7 +52,7 @@ class Score<T>(var name: String)
 fun main() {
       //在创建对象时，再来明确使用的是什么类型，同样使用尖括号填写
     val score = Score<Int>("数据结构与算法")
-}
+} 
 ```
 
 既然可以做到使用时明确，那现在我们应该怎么去设计这个类呢？
