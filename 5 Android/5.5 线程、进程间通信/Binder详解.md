@@ -105,10 +105,9 @@ ServiceManager的作用很简单：提供注册服务和查询服务的功能。
 - ServiceManager 分为 framework 层和 native 层，framework 层只是对 native 层进行了封装，方便调用。
 - 系统开机时，init 进程解析 init.rc 文件调用 service_manager.c 中的 main() 方法启动 ServiceManager 服务。
 - ServiceManager 启动步骤：
-
-1. 打开驱动创建全局链表 binder_procs
-2. 将自己当前进程信息保存到 binder_procs 链表
-3. 开启 loop 不断处理共享内存中的数据
+   1. 打开驱动创建全局链表 binder_procs
+   2. 将自己当前进程信息保存到 binder_procs 链表
+   3. 开启 loop 不断处理共享内存中的数据
 
 
 
