@@ -87,7 +87,18 @@ Binder 整体结构大致分4部分
 - 内核空间与用户空间通过 copy_from_user()，copy_to_user() 这两个内核方法来完成用户空间与内核空间内存的数据传输。
 - Binder 驱动中有一个全局链表 binder_procs 保存服务端的进程信息
 
+**Binder native层方法调用过程**
+- RemoteService.Stub.Proxy.transact()
+- BinderProxy.transact()
+- native方法transactNative()
+- android_util_Binder.cpp 的 android_os_BinderProxy_transact()函数
+- BpBinder:transact()
+- IPCThreadState::self()->transact()
+- IPCThreadState::talkWithDriver()
+- 最终调到驱动
 
+完整流程如下图：
+![img](https://raw.githubusercontent.com/xdtianyu/SourceAnalysis/master/art/binder_native_stack.png)
 
 ## 2.5 ServiceManager
 
