@@ -39,6 +39,15 @@ view层发出的事件传递到presenter层中，presenter层去操作model层�
 
 
 ## MVVM
+MVVM数据流向：
+1. View层注册ViewModel层的观察者
+2. View层点击事件（或其他获取数据请求）
+3. View层调用ViewModel层获取数据的方法
+4. ViewModel层调用Model层的Repository模块更新数据
+5. ViewModel层获取到数据后更新LiveData
+6. ViewModel层中LiveData通过postValue等方法通知View层并将数据回传
+7. View层通过注册的观察者观察到数据变更，接收数据并通过DataBinding将数据更新到UI
+
 
 ![img](./img/1741185064784-5f5f743e-ed60-4837-9757-5352b82b7347.png)
 
