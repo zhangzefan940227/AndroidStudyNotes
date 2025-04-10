@@ -51,7 +51,7 @@ class DetailFragment : Fragment() {
 ```
 
 # ViewModel生命周期
-![img](https://developer.android.com/static/images/topic/libraries/architecture/viewmodel-lifecycle.png?hl=zh-cn)
+<img src="./img/image-20250410230842551.png" alt="image-20250410230842551" style="zoom:50%;" />
 
 我们通常在系统首次调用 activity 对象的 onCreate() 方法时请求 ViewModel。系统可能会在 activity 的整个生命周期内多次调用 onCreate()，如在旋转设备屏幕时。ViewModel 存在的时间范围是从首次请求 ViewModel 直到 activity 完成并销毁。
 

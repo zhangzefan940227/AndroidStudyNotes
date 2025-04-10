@@ -1,4 +1,4 @@
-![img](./img/1719413926107-79941be7-b48a-42c2-a9ee-5e0c2f38be36.png)
+![image-20250410225605179](./img/image-20250410225605179.png)
 
 
 
@@ -8,9 +8,9 @@ MVC，Model View Controller，是软件架构中最常见的一种框架，简�
 
 当用户出发事件的时候，**view层会发送指令到controller层，接着controller去通知model层更新数据，model层更新完数据以后直接显示在view层上**，这就是MVC的工作原理。
 
-![img](./img/1719414850149-235258e7-68a1-461c-8121-6456479f21c1.svg+xml)
+<img src="./img/image-20250410225739269.png" alt="image-20250410225739269" style="zoom:50%;" />
 
-![img](./img/1719415094587-e678e304-a1f1-42be-9aa7-7310d3f960a1.png)
+<img src="./img/image-20250410225813265.png" alt="image-20250410225813265" style="zoom:40%;" />
 
 ### MVC的缺点
 
@@ -30,7 +30,7 @@ MVP作为MVC的演化，解决了MVC不少的缺点，对于Android来说，MVP�
 
 从图中就可以看出，最明显的差别就是view层和model层不再相互可知，完全的解耦，取而代之的presenter层充当了桥梁的作用。
 
-![img](./img/1719415793000-805c1229-9e3d-4c78-819a-aec367b5d77c.svg+xml)
+<img src="./img/image-20250410225901194.png" alt="image-20250410225901194" style="zoom:50%;" />
 
 view层发出的事件传递到presenter层中，presenter层去操作model层，并且将数据返回给view层，整个过程中view层和model层完全没有联系。
 
@@ -38,7 +38,8 @@ view层发出的事件传递到presenter层中，presenter层去操作model层�
 
 
 
-## MVVM
+##  MVVM
+
 MVVM数据流向：
 1. View层注册ViewModel层的观察者
 2. View层点击事件（或其他获取数据请求）
@@ -48,10 +49,9 @@ MVVM数据流向：
 6. ViewModel层中LiveData通过postValue等方法通知View层并将数据回传
 7. View层通过注册的观察者观察到数据变更，接收数据并通过DataBinding将数据更新到UI
 
+<img src="./img/1741185064784-5f5f743e-ed60-4837-9757-5352b82b7347.png" alt="img" style="zoom:50%;" />
 
-![img](./img/1741185064784-5f5f743e-ed60-4837-9757-5352b82b7347.png)
-
-![img](./img/1719416270553-89feab34-bef1-4960-84f1-31258879ffec.svg+xml)
+<img src="./img/image-20250410230047671.png" alt="image-20250410230047671" style="zoom:50%;" />
 
 它和MVP的区别貌似不大，只不过是presenter层换成了viewmodel层，还有一点就是view层和viewmodel层是相互绑定的关系，这意味着当你更新viewmodel层的数据的时候，view层会相应的变动ui。相比于`MVP`，`MVVM`既不用声明多个接口及方法，同时`ViewModel`也不会像`Presenter`那样去持有`View`层的引用，而是生命周期感知的，`MVVM`方式更加解耦。
 
