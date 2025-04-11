@@ -1519,3 +1519,33 @@ Fragment依附于Activity存在，因此与Activity之间的通信可以归纳�
 Json是一种轻量级的数据交换格式，具有良好的可读和便于编写的特性。XML即扩展标记语言，用来标记电子文件使其具有结构性的标记语言，可以用来标记数据。定义数据类型，是一种允许用户对自己的标记语言进行定义的源语言。
 
 JSON在编码和解码上优于XML，并且数据体积更下，解析更快，与JavaScript交互更加方便，但是对数据的描述性较XML差。
+
+### 15. <span id="android_base_15">Assets目录与res目录的区别</span>
+
+	assets目录与res下的raw、drawable目录一样，也可用来存放资源文件，但它们三者区别如下：
+
+|             | assets   | res/raw   | res/drawable   |
+| ----------- | -------- | --------- | -------------- |
+| 获取资源方式      | 文件路径+文件名 | R.raw.xxx | R.drawable.xxx |
+| 是否被压缩       | false    | false     | true(失真压缩)     |
+| 能否获取子目录下的资源 | true     | false     | false          |
+
+res/raw和assets的区别：
+
+	res/raw中的文件会被映射到R.java文件中，访问的时候直接使用资源ID即可，assets文件夹下的文件不会被映射到R文件中，访问的时候需要AssetManager类。
+	
+	res/raw不可以有目录结构，而assets则可以有目录结构，也就是assets目录下可以再建立文件夹。
+	
+	读取res/raw下的文件资源，通过以下方式获取输入流来进行写操作：
+
+```java
+InputStream is = getResources().openRawResource(R.id.filename);
+```
+
+	读取assets下的文件资源，通过以下方式获取输入流进行写操作，使用AssetManager。
+
+注意：
+
+1. AssertManager中不能处理单个超过1M的文件，而raw没有这个限制
+2. assets文件夹是存放不进行编译加工的原生文件，即该文件夹里面的文件不会像xml、java文件被预编译，可以存放一些图片、html、js等等
+
