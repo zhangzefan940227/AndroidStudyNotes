@@ -1638,3 +1638,4 @@ HandlerThread自带的Looper使它可以通过消息队列，来重复使用当�
     }
 ```
 **特点：**
+1. HandlerThread其实是Handler+Thread+Looper的组合，它本质上是一个Thread，因为它继承了Thread，相比普通的Thread，他不会阻塞，因为它内部通过Looper实现了消息循环机制，保证了多个任务的串行执行。缺点：效率低。
