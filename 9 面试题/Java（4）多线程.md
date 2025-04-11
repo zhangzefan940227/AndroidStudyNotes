@@ -1626,3 +1626,19 @@ Android Studio点击build按钮之后，AS就会编译整个项目，并将apk�
 
 [http://mouxuejie.com/blog/2016-08-04/build-and-package-flow-introduction/](http://mouxuejie.com/blog/2016-08-04/build-and-package-flow-introduction/)
 
+### 19. <span id="android_base_19">Android利用scheme协议进行跳转</span>
+
+scheme是一种页面跳转协议。
+
+通过定义自己的scheme协议，可以非常方便的跳转App中的各个页面；
+
+通过scheme协议，服务器可以定制化告诉App跳转到App内部页面。
+
+**Scheme协议在Android中的使用场景**
+
+* H5跳转到native页面
+* 客户端获取push消息中后，点击消息跳转到App内部页面
+* App根据URL跳转到另外一个App指定页面
+
+**示例**
+注册 SchemeActivity：
