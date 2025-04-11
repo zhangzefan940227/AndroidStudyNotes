@@ -807,3 +807,310 @@ content://com.example.app.provider/*
 // 以下的URI 表示 匹配provider中的table表的所有行
 content://com.example.app.provider/table/#
 ```
+
+##### MIME数据类型
+
+* MIME，即多功能Internet邮件扩充服务。它是一种多用途网际邮件扩充协议。MIME类型就是设定某种扩展名的文件用一种应用程序来打开的方式类型，当该扩展名文件被访问的时候，浏览器会自动使用指定应用程序来打开。多用于指定一些客户端自定义的文件名，以及一些媒体文件打开方式。
+
+* 作用：指定某个扩展名的文件用某种应用程序来打开。
+
+* ContentProvider根据URI返回MIME类型
+
+  ```
+  ContentProvider.getType(uri);
+  ```
+
+* MIME类型组成
+
+  每种MIME类型由两部分组成=类型+子类型
+
+  MIME类型是一个包含两部分的字符串，例：
+
+  text / html 类型为text 子类型为html
+
+  text/css    text/xml 等等
+
+  
+
+### 3. <span id="android_base_3">Context的理解？</span>
+
+Android应用模型是基于组件的应用设计模式，组件的运行要有一个完整的Android工程环境。在这个工程环境下，Activity、Service等系统组件才能够正常工作，而这些组件并不能采用普通的Java对象创建方式，new一下就能创建实例了，而是要有它们各自的上下文环境，也就是Context，Context是维持Android程序中各组件能够正常工作的一个核心功能类。
+
+**如何生动形象的理解Context？**
+
+一个Android程序可以理解为一部电影，Activity、Service、BroadcastReceiver和ContentProvider这四大组件就好比戏了的四个主角，它们是剧组（系统）一开始定好的，主角并不是大街上随便拉个人（new 一个对象）都能演的。有了演员当然也得有摄像机拍摄啊，它们必须通过镜头（Context）才能将戏传给观众，这也就正对应说四大组件必须工作在Context环境下。那么Button、TextView等等控件就相当于群演，显然没那么重用，随便一个路人甲都能演（可以new一个对象），但是它们也必须在面对镜头（工作在Context环境下），所以Button mButtom = new Button(context) 是可以的。
+
+**源码中的Context**
+
+```java
+public abstract class Context {
+}
+```
+
+它是一个纯抽象类，那就看看它的实现类。
+
+![](![img](http://upload-images.jianshu.io/upload_images/1187237-1b4c0cd31fd0193f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+它有两个具体实现类：ContextImpl和ContextWrapper。
+
+其中ContextWrapper类，是一个包装类而已，ContextWrapper构造函数中必须包含一个真正的Context引用，同时ContextWrapper中提供了attachBaseContext()用于给ContextWrapper对象指定真正的Context对象，调用ContextWrapper的方法都会被转向其包含的真正的Context对象。ContextThemeWrapper类，其内部包含了与主题Theme相关的接口，这里所说的主题就是指在AndroidManifest,xml中通过android:theme为Application元素或者Activity元素指定的主题。当然，只有Activity才需要主题，Service是不需要主题的，所以Service直接继承与ContextWrapper，Application同理。而ContextImpl类则真正实现了Context中的所有函数，应用程序中所调用的各种Context类的方法，其实现均来源于该类。**Context得两个子类分工明确，其中ContextImpl是Context的具体实现类，ContextWrapper是Context的包装类。** Activity、Application、Service虽都继承自ContextWrapper（Activity继承自ContextWrapper的子类ContextThemeWrapper），但它们初始化的过程中都会创建ContextImpl对象，由ContextImpl实现Context中的方法。
+
+**一个应用程序有几个Context？**
+
+在应用程序中Context的具体实现子类就是：Activity、Service和Application。那么Context数量=Activity数量+Service数量+1。那么为什么四大组件中只有Activity和Service持有Context呢？BroadcastReceiver和ContextPrivider并不是Context的子类，它们所持有的Context都是其他地方传过去的，所以并不计入Context总数。
+
+**Context能干什么？**
+
+Context能实现的功能太多了，弹出Toast、启动Activity、启动Service、发送广播、启动数据库等等都要用到Context。
+
+```java
+TextView tv = new TextView(getContext());
+
+ListAdapter adapter = new SimpleCursorAdapter(getApplicationContext(), ...);
+
+AudioManager am = (AudioManager) getContext().getSystemService(Context.AUDIO_SERVICE);getApplicationContext().getSharedPreferences(name, mode);
+
+getApplicationContext().getContentResolver().query(uri, ...);
+
+getContext().getResources().getDisplayMetrics().widthPixels * 5 / 8;
+
+getContext().startActivity(intent);
+
+getContext().startService(intent);
+
+getContext().sendBroadcast(intent);
+```
+
+**Context的作用域**
+
+虽然Context神通广大，但并不是随便拿到一个Context实例就可以为所欲为，它的使用还是有一些规则限制的。由于Context的具体实例是由ContextImpl类去实现的，因此在绝大多数场景下，Activity、Service和Application这三种类型的Context都是可以通用的。不过有几种场景比较特殊，比如启动Activity，还有弹出Dialog。出于安全原因的考虑，Android是不允许Activity或Dialog凭空出现的，一个Activity的启动必须要建立在另一个Activity的基础之上，也就是以此形成返回栈。而Dialog则必须在一个Activity上面弹出（除非是System Alert类型的Dialog），因此在这种场景下，我们只能使用Activity类型的Context，否则将会报错。
+
+![](http://upload-images.jianshu.io/upload_images/1187237-fb32b0f992da4781.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+从上图我们可以发现Activity所持有的Context的作用域最广，无所不能，因此Activity继承至ContextThemeWrapper，而Application和Service继承至ContextWrapper，很显然ContextThemeWrapper在ContextWrapper的基础上又做了一些操作使得Activity变得更强大。着重讲一下不推荐使用的两种情况：
+
+1. 如果我们用ApplicationContext去启动一个LaunchMode为standard的Activity的时候会报错：
+
+   android.util.AndroidRuntimeException: Calling startActivity from outside of an Activity context requires the FLAG_ACTIVITY_NEW_TASK flag. Is this really what you want?
+
+   这是因为非Activity类型的Context并没有所谓的任务栈，所以待启动的Activity就找不到栈了。解决这个问题的方法就是为待启动的Activity指定FLAG_ACTIVITY_NEW_TASK标记位，这样启动的时候就为它创建一个新的任务栈，而此时Activity是以singleTask模式启动的。所有这种用Application启动Activity的方式都不推荐，Service同Application。
+
+2. 在Application和Service中去LayoutInflate也是合法的，但是会使用系统默认的主题样式，如果你自定义了某些样式可能不会被使用，这种方式也不推荐使用。
+
+一句话总结：**凡是跟UI相关的，都应该使用Activity作为Context来处理；其他的一些操作，Service、Activity、Application等实例都可以，当然了注意Context引用的持有，防止内存泄露。**
+
+**如何获取Context？**
+
+有四种方法：
+
+1. View.getContext 返回当前View对象的Context对象，通常是当前正在展示的Activity对象。
+2. Activity.getApplicationContext 获取当前Activity所在的进程的Context对象，通常我们使用Context对象时，要优先考虑这个全局的进程Context。
+3. ContextWrapper.getBaseContext() 用来获取一个ContextWrapper进行装饰之前的Context，可以使用这个方法，这个方法在实际开发中使用的不多，也不建议使用。
+4. Activity.this 返回当前Activity实例，如果是UI控件需要使用Activity作为Context对象，但是默认的Toast实际上使用ApplicationContext也可以。
+
+**getApplication()和getApplicationContext()的区别？**
+
+其内存地址是一样的。Application本身就是一个Context，这里获取getApplicationContext得到的结果就是Application本身的实例。getApplication方法的语义性很强，就是用来获取Application实例的，但是这个方法只有在Activity和Service中才能调用的到。那么也许在绝大多数情况下我们都是在Activity或者Service中使用Application，但是如果在一些其他的场景，比如BroadcastReceiver中也想获取Application实例，这时就可以借助getApplicationContext方法了。
+
+```java
+public class MyReceiver extends BroadcastReceiver{
+  @Override
+  public void onReceive(Contextcontext,Intentintent){
+    Application myApp= (Application)context.getApplicationContext();
+  }
+}
+```
+
+
+
+### 4. <span id="android_base_4">AsyncTask详解</span>
+
+#### Android中的线程
+
+在操作系统中，线程是操作系统调度的最小单元，同时线程又是一种受限的系统资源，即线程不可能无限制的产生，并且**线程的创建和销毁都会有相应的开销**。当系统中存在大量的线程时，系统会通过时间片轮转的方式调度每个线程，因此线程不可能做到绝对的并行。
+
+如果在一个进程中频繁的创建和销毁线程，显然不是高效地做法。正确的做法是采用线程池，一个线程池会缓存一定数量的线程，通过线程池就可以避免因为频繁创建和销毁线程所带来的系统开销。
+
+#### AsyncTask简介
+
+AsyncTask是一个抽象类，它是由Android封装的一个轻量级异步类，它可以在线程池中执行后台任务，然后把执行的进度和最终结果传递给主线程并在主线程中更新UI。
+
+AsyncTask的内部封装了两个线程池（SerialExecutor和THREAD_POOL_EXECUTOR）和一个Handle（InternalHandler）。
+
+其中SerialExecutor线程池用于任务的排队，让需要执行的多个耗时任务，按顺序排列，THREAD_POLL_EXECUTOR线程池才真正的执行任务，InternalHandler用于从工作线程切换到主线程。
+
+##### AsyncTask的泛型参数
+
+AsyncTask的类声明如下：
+
+```java
+public abstract class AsyncTask<Params,Progress,Result>
+```
+
+AsyncTask是一个抽象泛型类。
+
+Params：开始异步任务时传入的参数类型
+
+Progress：异步任务执行过程中，返回下载进度值的类型
+
+Result：异步任务执行完成后，返回的结果类型
+
+如果AsyncTask确定不需要传递具体参数，那么这三个泛型参数可以用Void来代替。
+
+##### AsyncTask的核心方法
+
+**onPreExecute()**
+
+这个方法会在**后台任务开始执行之前调用，在主线程执行**。用于进行一些界面上的初始化操作，比如显示一个进度条对话框等等。
+
+**doInBackground(Params...)**
+
+这个方法中的所有代码都会在子线程中运行，我们应该在这里去处理所有的耗时任务。
+
+任务一旦完成就可以通过return语句来将任务的执行结果进行返回，如果AsyncTask的第三个泛型参数指定的是Void，就可以不返回任务执行结果。**注意，这个方法中是不可以进行UI操作的，如果需要更新UI元素，比如说反馈当前任务的执行进度，可以调用publishProgress(Progress ...)方法来完成。**
+
+**onProgressUpdate(Progress...)**
+
+当在后台任务中调用了publishProgress(Progress...)方法后，这个方法就很快被调用，方法中携带的参数就是在后台任务中传递过来的。**在这个方法中可以对UI进行操作，在主线程中进行，利用参数中的数值就可以对界面元素进行相应的更新。**
+
+**onPostExecute(Result)**
+
+当doInBackground(Params...)执行完毕并通过return语句进行返回时，这个方法就很快被调用。返回的数据会作为参数传递到此方法中，**可以利用返回的数据来进行一些UI操作，在主线程中进行，比如说提醒任务执行的结果，以及关闭掉进度条对话框等等。**
+
+上面几个方法的调用顺序为：onPreExecute() --> doInBackground() --> publishProgress() --> onProgressUpdate() --> onPostExecute()
+
+如果不需要执行更新进度则为：onPreExecute() --> doInBackground() --> onPostExecute()
+
+除了上面四个方法，AsyncTask还提供了onCancelled()方法，**它同样在主线程中执行，当异步任务取消时，onCancelled会被调用，这个时候onPostExecute()则不会调用，但是，AsyncTask的cancel()方法并不是真正的去取消任务，只是设置这个任务为取消状态，我们需要在doInBackground()判断终止任务。就好比想要终止一个线程，调用interrupt()方法，只是进行标记为中断，需要在线程内部进行标记判断然后中断线程。**
+
+##### 使用AsyncTask的注意事项
+
+1. 异步任务的实例必须在UI线程中创建，即AsyncTask对象必须在UI线程中创建。
+2. execute(Params ... params)方法必须在UI线程中调用。
+3. 不要手动调用onPreExecute()、doInBackground(Params ... params)、onProgressUpdate()、onPostExecute() 这几个方法。
+4. 不能在doInBackground()中更改UI组件信息。
+5. 一个任务实例只能执行一次，如果执行第二次将会抛异常。
+
+
+
+### 5. <span id="android_base_5">Android虚拟机以及编译过程</span>
+
+#### 什么是Dalvik虚拟机？
+
+Dalvik是Google公司自己设计用于Android平台的Java虚拟机，它是Android平台的重要组成部分，支持dex格式的Java应用程序的运行。dex格式是专门为Dalvik设计的一种压缩格式，适合内存和处理器速度有限的系统。Google对其进行了特定的优化，是的Dalvik具有**高效、简洁、节省资源**的特点。从Android系统架构图知，Dalvik虚拟机运行在Android的运行时库层。
+
+Dalvik作为面向Linux、为嵌入式操作系统设计的虚拟机，主要负责完成对象生命周期、堆栈管理、线程管理、安全和异常管理，以及垃圾回收等。另外，Dalvik早期并没有JIT编译器，知道Android2.2才加入了对JIT的技术支持。
+
+#### Dalvik虚拟机的特点
+
+体积小，占用内存空间小。
+
+专有的DEX可执行文件格式，体积更小，执行速度更快。
+
+常量池采用32位索引值，寻址类方法名、字段名，常量更快。。
+
+基于寄存器架构，并拥有一套完整的指令系统。
+
+提供了对象生命周期管理，堆栈管理，线程管理，安全和异常管理以及垃圾回收等重要功能。
+
+所有的Android程序都运行在Android系统进程里，每个进程对应着一个Dalvik虚拟机实例。
+
+#### Dalvik虚拟机与Java虚拟机的区别
+
+Dalvik虚拟机与传统的Java虚拟机有着许多不同点，两者并不兼容，它们显著的不同点主要表现在以下几个方面：
+
+**Java虚拟机运行的是Java字节码，Dalvik虚拟机运行的是Dalvik字节码。**
+
+传统的Java程序经过编译，生成Java字节码保存在class文件中，Java虚拟机通过解码class文件中的内容来运行程序。而Dalvik虚拟机运行的是Dalvik字节码，所有的Dalvik字节码由Java字节码转换而来，并被打包到一个DEX可执行文件中。Dalvik虚拟机通过解码DEX文件来执行这些字节码。
+
+![](http://upload-images.jianshu.io/upload_images/3985563-9deada32508b8ee5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+**Dalvik可执行文件体积小，Android SDK中有一个叫dx的工具负责将Java字节码转换为Dalvik字节码。**
+
+消除其中的冗余信息，重新组合形成一个常量池，所有的类文件共享同一个常量池。由于dx工具对常量池的压缩，使得相同的字符串常量在DEX文件中只出现一次，从而减小了文件的体积。
+
+简单来讲，dex格式文件就是将多个class文件中公有的部分统一存放，去除冗余信息。
+
+**Java虚拟机与Dalvik虚拟机架构不同，这也是Dalvik与JVM之间最大的区别。**
+
+**Java虚拟机基于栈架构。**程序在运行时虚拟机需要频繁的从栈上读取或写入数据，这个过程需要更多的指令分配与内存访问次数，会耗费不少CPU时间，对于像手机设备资源有限来说，这是相当大的一笔开销。
+
+**Dalvik虚拟机基于寄存器架构。**
+
+数据的访问通过寄存器间直接传递，这样的访问方式比基于栈方式要快很多。
+
+#### Dalvik虚拟机的结构
+
+![](http://upload-images.jianshu.io/upload_images/3985563-4da3de576e6a045d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+一个应用首先经过DX工具将class文件转换成Dalvik虚拟机可以执行的dex文件，然后由类加载器加载原生类和Java类，接着由解释器根据指令集对Dalvik字节码进行解释、执行。最后，根据dvm_arch参数选择编译的目标机体系结构。
+
+#### Android APK编译打包流程
+
+![](http://upload-images.jianshu.io/upload_images/3985563-cdba319dab32d0c7.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+1. AAPT（Android Asset Packaging Tools）工具会打包应用中的资源文件，如AndroidManifest.xml、layout布局中的xml等，并将xml文件编译成二进制形式，当然assets文件夹中的文件不会被编译，图片以及raw文件夹中的资源也会保持原有的形态，需要注意的是raw文件夹中的资源也会生成资源ID。AAPT编译完成后会生成R.java文件。
+2. AIDL工会将所有的aidl接口转换为java接口。
+3. 所有的Java源代码、R文件、接口都会编译器编译成.class文件。
+4. Dex工具会将上述产生的.class文件以及第三方库和其他class文件转化为dex（Dalvik虚拟机可执行文件）文件，dex文件最终会被打包进APK文件。
+5. apkbuilder会把编译后的资源和其他资源文件同dex文件一起打入APK中。
+6. 生成APK文件之后，，需要对其签名才能安装到设备上，平时测试都会使用debug keystore，当发布应用时必须使用release版的keystore对应用进行签名。
+7. 如果对APK正式签名，还需要使用zipalign工具对APK进行对齐操作，这样做的好处是当应用运行时能提高速度，但是会相应的增加内存开销。
+
+**总结：编译 --> DEX --> 打包 --> 签名和对齐**
+
+#### ART虚拟机与Dalvik虚拟机的区别
+
+##### 什么是ART？
+
+ART代表Android Runtime，其处理应用程序执行的方式完全不同于Dalvik，Dalvik是依靠一个Just-In-Time（JIT）编译器去解释字节码。开发者编译后的应用代码需要通过一个解释器在用户的设备上运行，这一机制并不高效，但让应用能更容易在不同硬件和架构上运行。ART则完全改变了这套做法，在应用安装时就预编译字节码到机器语言，这一机制叫Ahead-Of-Time（AOT）编译。在移除解释代码这一过程后，应用程序执行将更加效率。启动更快。
+
+##### ART优点：
+
+1. 系统性能的显著提升。
+2. 应用启动更快、运行更快、体验更流畅、触摸反馈更及时。
+3. 更长的电池续航能力
+4. 支持更低的硬件。
+
+##### ART缺点：
+
+1. 更大的存储空间占用，可能会增加10%-20%
+2. 更长的应用安装时间
+
+#### ART虚拟机相对于Dalvik虚拟机的提升
+
+##### 预编译
+
+在Dalvik中，如同其他大多数JVM一样，都采用的是JIT来做及时翻译（动态翻译），将dex或odex中并排的Dalvik code（或者叫smali指令集）运行态翻译成native code去执行。JIT的引入使得Dalvik提升了3-6倍的性能。
+
+而在ART中，完全抛弃了Dalvik的JIT，使用了AOT直接在安装时将其完全翻译成native code。这一技术的引入，使得虚拟机执行指令的速度又一重大提升。
+
+##### 垃圾回收机制
+
+首先介绍下Dalvik的GC过程，主要有四个过程：
+
+1. 当GC被触发时候，其会去查找所有活动的对象，这个时候整个程序与虚拟机内部的所有线程就会挂起，这样目的是在较少的堆栈里找到所引用的对象。
+2. GC对符合条件的对象进行标记。
+3. GC对标记的对象进行回收。
+4. 恢复所有线程的执行现场继续运行。
+
+**Dalvik这么做的好处是，当pause了之后，GC势必是相当快速的，但是如果出现GC频繁并且内存吃紧势必会导致UI卡顿、掉帧、操作不流畅等等。**
+
+后来ART改善了这种GC方式，主要的改善点在将其**非并发过程改成了部分并发，还有就是对内存的重新分配管理。**
+
+当ART GC发生时：
+
+1. GC将会锁住Java堆，扫描并进行标记。
+2. 标记完毕释放掉Java堆的锁，并且挂起所有线程。
+3. GC对标记的对象进行回收。
+4. 恢复所有线程的执行继续运行。
+5. **重复2-4直到结束。**
+
+可以看出整个过程做到了部分并发使得时间缩短，GC效率提高两倍。
+
+##### 提高内存使用，减少碎片化
+
+Dalvik内存管理特点是：内存碎片化严重，当然这也是标记清除算法带来的弊端。
+
+**ART的解决：** 在ART中，它将Java分了一块空间命名为 Large-Object-Space，这个内存空间的引入用来专文存放大对象，同时ART又引入了 moving collector 的技术，即将不连续的物理内存快进行对齐。对齐之后内存碎片化就得到了很好的解决。Large-Object-Space的引入是因为moving collector对大块内存的位移时间成本太高。据官方统计，ART的内存利用率提高了10倍左右，大大提高了内存的利用率。
+
