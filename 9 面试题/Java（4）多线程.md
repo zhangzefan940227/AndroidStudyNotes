@@ -1113,4 +1113,405 @@ ART代表Android Runtime，其处理应用程序执行的方式完全不同于Da
 Dalvik内存管理特点是：内存碎片化严重，当然这也是标记清除算法带来的弊端。
 
 **ART的解决：** 在ART中，它将Java分了一块空间命名为 Large-Object-Space，这个内存空间的引入用来专文存放大对象，同时ART又引入了 moving collector 的技术，即将不连续的物理内存快进行对齐。对齐之后内存碎片化就得到了很好的解决。Large-Object-Space的引入是因为moving collector对大块内存的位移时间成本太高。据官方统计，ART的内存利用率提高了10倍左右，大大提高了内存的利用率。
+### 6.<span id="android_base_6"> 进程保活方案</span>
+
+#### 保活的两个方案
+
+* 提高进程优先级，降低进程被杀死的概率
+* 在进程被杀死后，进行拉活
+
+##### 进程的优先级，划分五级：
+
+1. 前台进程（Foreground process）
+2. 可见进程（Visible process）
+3. 服务进程（Service process）
+4. 后台进程（Background process）
+5. 空进程（Empty process）
+
+**前台进程一般有以下特点：**
+
+* 拥有用户正在交互的Activity（已调用onResume）
+* 拥有某个Service，后者绑定到用户正在交互的Activity
+* 拥有正在前台运行的Service（服务已调用startForeground）
+* 拥有一个正执行生命周期回调的Service（onCreate，onStart或onDestory）
+* 拥有其正执行其onReceive()方法的BroadcastReceiver
+
+#### 提高进程优先级
+
+* 利用Activity提升权限
+
+  监控手机锁屏解锁事件，在屏幕锁屏时启动1像素的Activity，在用户解锁时将Activity销毁，注意该Activity需设计成用户无感知。
+
+* Notification提升权限
+
+  Android中Service的优先级为4，通过setForeground接口可以将后台Service设置为前台Service，使进程的优先级由4提升为2，从而是进程的优先级仅仅低于用户当前正在交互的进程，与可见进程优先级一致，使进程被杀死的概率大大降低。
+
+#### 进程死后拉活
+
+* 利用系统广播拉活
+
+  在发生特定系统事件时，系统会发出相应的广播，通过在AndroidManifest中静态注册对应的广播监听器，即可在发生响应事件时拉活。
+
+* 利用第三方应用广播拉活
+
+  该方案总的设计思想与接收系统广播类似，不同的是该方案为接收第三方Top应用广播。通过反编译第三方Top应用，如微信、支付宝等等，找出它们外发的广播，在应用中进行监听，这样当这些应用发出广播时，就会将我们的应用拉活。
+
+* 利用系统Service机制拉活
+
+  将Service设置为START_STICKY，利用系统机制在Service挂掉后自动拉活。
+
+* 利用Native进程拉活
+
+  利用Linux中的fork机制创建Native进程，在Native进程中监控主进程的存活，当主进程挂掉后，在Native进程中立即对主进程进行拉活。
+
+  原理：在Android中所有进程和系统组件的生命周期受ActivityManagerService的统一管理。而且，通过Linux的fork机制创建的进程为纯Linux进程，其生命周期不受Android管理。
+
+* 利用 JobScheduler机制拉活
+
+  在Android5.0以后系统对Native进程等加强了管理，Native拉活方式失效。系统在Android5.0以后版本提供了 JobScheduler接口，系统会定时调用该进程以使应用进行一些逻辑操作。
+
+* 利用账号同步机制拉活
+
+  Android系统的账号同步机制会定期同步账号进行，该方案目的在于利用同步机制进行进程的拉活。
+
+#### 其他有效的拉活方案
+
+相互唤醒。
+
+**参考：**
+
+[进程保活方案1](https://www.jianshu.com/p/845373586ac1)
+
+[Android进程保活招式大全](http://geek.csdn.net/news/detail/95035)
+
+
+
+### 7. <span id="android_base_7">Android 消息机制</span>
+
+#### 消息机制简介
+
+在Android中使用消息机制，我们首先想到的就是Handler。没错，Handler是Android消息机制的上层接口。我们通常只会接触到Handler和Message开完成消息机制，其实内部还有两大助手共同完成消息传递。
+
+#### 消息机制模型
+
+消息机制主要包含：MessageQueue、Handler、Looper和Message这四大部分。
+
+* Message
+
+  需要传递的消息，可以传递数据
+
+* MessageQueue
+
+  消息队列，但是它的内部实现并不是用的队列，实际上是通过一个单链表的数据结构来维护消息列表，因为单链表在插入和删除上比较有优势。主要功能是向消息池传递消息（MessageQueue.enqueueMessage）和取走消息池的消息（MessageQueue.next）
+
+* Handle
+
+  消息辅助类，主要功能是向消息池发送各种消息事件（Handler.sendMessage）和处理相应消息事件（Handler.handleMessage）
+
+* Looper
+
+  不断循环执行（Looper.loop），从MessageQueue中读取消息，按分发机制将消息分发给目标处理者。
+
+#### 消息机制的架构
+
+**运行流程：**
+
+在子线程执行完耗时操作，当Handler发送消息时，将会调用MessageQueue.enqueueMessage，向消息队列中添加消息。当通过Looper.loop开启循环后，会不断的从线程池中读取消息，即调用MessageQueue.next，然后调用目标Handler（即发送该消息的Handler）的dispatchMessage方法传递消息，然后返回到Handler所在线程，目标Handler收到消息，调用handleMessage方法，接收消息，处理消息。
+
+**MessageQueue、Handler和Looper三者之间的关系：**
+
+每个线程中只能存在一个Looper，Looper是保存在ThreadLocal中。主线程已经创建一个Looper，所以在主线程中不需要在创建Looper，但是在其他线程中需要创建Looper。每个线程中可以有多个Handler，即一个Looper可以处理来自多个Handler的消息。Looper中维护一个MessageQueue，来维护消息队列，消息队列中的Message可以来自不同的Handler。
+
+#### 总结
+
+![](http://upload-images.jianshu.io/upload_images/3985563-b3295b67a2b0477f.png?imageMogr2/auto-orient/strip|imageView2/2/w/1240)
+
+Android消息机制之ThreadLocal的工作原理：
+
+Looper中还有一个特殊的概念，那就是ThreadLocal，ThreadLocal并不是线程，它的作用是可以在每个线程中存储数据。大家知道，Handle创建的时候会采用当前线程的Looper来构造消息循环系统，那么Handle内部如何获取当前线程的Looper呢？这就要使用ThreadLocal了，ThreadLocal可以在不同的线程之中互不干扰的存储并提供数据，通过ThreadLocal可以轻松的获取每个线程的Looper。当然，需要注意的是，线程默认是没有Looper的，如果需要使用Handler就必须为线程创建Looper。大家经常提到的主线程，也叫UI线程，它就是ActivityThread，ActivityThread被创建时就会初始化Looper，这也是在主线程默认可以使用Handle的原因。
+
+ThreadLocal是一个线程内部的数据存储类，通过它可以在指定的线程中存储数据，数据存储以后，只有在指定线程中可以获取到存储的数据，对于其他线程来说无法获取到数据。在日常开发中用到ThreadLocal的地方很少，但是在某些特殊的场景下，通过ThreadLocal可以轻松的实现一些看起来很复杂的功能，这一点在Android源码中也有所体现，比如Looper、ActivityThread以及AMS中都用到了ThreadLocal。具体到ThreadLocal的使用场景，这个不好统一来描述，一般来说，当某些数据是以线程为作用域并且不同线程具有不同的数据副本的时候，就可以采用ThreadLocal。比如对于Handle来说，它需要获取当前线程的Looper，很显然Looper的作用域就是线程并且不同线程具有不同的Looper，这个时候通过ThreadLocal就可以轻松的实现Looper在线程中的存取。
+
+ThreadLocal另外一个使用场景是复杂逻辑下的对象传递，比如监听器的传递，有些时候一个线程中的任务过于复杂，这可能表现为函数调用栈比较深以及代码入口的多样性，在这种情况下，我们又需要监听器能够贯穿整个线程的执行过程，这个时候可以怎么做呢？其实就可以采用ThreadLocal，采用ThreadLocal可以让监听器作为线程内的局部对象而存在，在线程内部只要通过get方法就可以获取到监听器。而如果不采用ThreadLocal，那么我们能想到的可能就是一下两种方法：
+
+1. 将监听器通过参数的形式在函数调用栈中进行传递
+
+   在函数调用栈很深的时候，通过函数参数来传递监听器对象几乎是不可接受的
+
+2. 将监听器作为静态变量供线程访问
+
+   这是可以接受的，但是这种状态是不具有可扩充性的，比如如果同时有两个线程在执行，那就需要提供两个静态的监听器对象，如果有十个线程在并发执行呢？提供十个静态的监听器对象？这显然是不可思议的。而采用ThreadLocal每个监听器对象都在自己的线程内部存储，根本就不会有这个问题。
+
+```
+ThreadLocal<Boolean> threadLocal = new ThreadLocal<>();
+threadLocal.set(true);
+        Log.i(TAG, "getMsg: MainThread"+threadLocal.get());
+        new Thread("Thread#1"){
+            @Override
+            public void run() {
+                threadLocal.set(false);
+                Log.i(TAG, "run: Thread#1" + threadLocal.get());
+            }
+        }.start();
+        new Thread("Thread#2"){
+            @Override
+            public void run() {
+                Log.i(TAG, "run: Thread#2" + threadLocal.get());
+            }
+        }.start();
+        
+输出：true、false、null
+```
+
+虽然在不同线程中访问的是同一个ThreadLocal对象，但是它们获取到的值却是不一样的。不同线程访问同一个ThreadLocal的get方法，ThreadLocal内部会从各自的线程中取出一个数组，然后再从数据中根据当前ThreadLocal的索引去查找出对应的value值，很显然，不同线程中的数组是不同的，这就是为什么通过ThreadLocal可以在不同的线程中维护一套数据副本并且彼此互不干扰。
+
+ThreadLocal是一个泛型类，里面有两个重要方法：get()和set()方法。它们所操作的对象都是当前线程的localValues对象的table数组，因此在不同线程中访问同一个ThreadLocal的get和set方法，它们对ThreadLocal所做的读写操作仅限于各自线程的内部，这就是为什么ThreadLocal可以在多个线程中互不干扰的存储和修改数据。
+
+[https://blog.csdn.net/singwhatiwanna/article/details/48350919](https://blog.csdn.net/singwhatiwanna/article/details/48350919)
+
+### 8. <span id="android_base_8">Window、Activity、DecorView以及ViewRoot之间的关系</span>
+
+#### 职能简介
+
+**Activity**
+
+Activity并不负者视图控制，它只是控制生命周期和处理事件。真正控制视图的是Window。一个Activity包含了一个Window，Window才是真正代表一个窗口。**Activity就像一个控制器，统筹视图的添加与显示，以及通过其他回调方法，来与Window以及View进行交互。**
+
+**Window**
+
+Window是视图的承载器，内部持有一个DecorView，而这个DecorView才是view的跟布局。Window是一个抽象类，实际在Activity中持有的是其子类PhoneWindow。PhoneWindow中有个内部类DecorView，通过创建DecorView来加载Activity中设置的布局。Window通过WindowManager将DecorView加载其中，并将DecorView交给ViewRoot，进行视图绘制以及其他交互。
+
+**DecorView**
+
+DecorView是FrameLayout的子类，它可以被认为是Android视图树的根节点视图。
+
+DecorView作为顶级View，一般情况下它内部包含一个竖直方向的LinearLayout，**在这个LinearLayout里面有上下三个部分，上面是个ViewStub，延迟加载的视图（应该是设置ActionBar，根据Theme设置），中间的是标题栏（根据Theme设置，有的布局没有），下面是内容栏。**在Activity中通过setContentView所设置的布局文件其实就是被加到内容栏之中的，成为其唯一子View。
+
+**ViewRoot**
+
+ViewRoot可能比较陌生，但是其作用非常重大。所有View的绘制以及事件分发等交互都是通过它来执行或传递的。
+
+ViewRoot对应ViewRootImpl类，它是连接WindowManagerService和DecorView的纽带，View的三大流程（测量、布局、绘制）均通过ViewRoot来完成。
+
+ViewRoot并不属于View树的一份子。从源码实现上来看，它既是非View的子类，也是非View的父类，但是，它实现了ViewParent接口，这让它可以作为View的名义上的父视图。RootView继承了Handler类，可以接收事件并分发，Android的所有触屏事件，按键事件、界面刷新等事件都是通过ViewRoot来进行分发的。
+
+![](http://upload-images.jianshu.io/upload_images/3985563-e773ab2cb83ad214.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+
+#### 总结
+
+Activity就像个控制器，不负责视图部分。Window像个承载器，装着内部视图。DecorView就是个顶级视图，是所有View的最外层布局。ViewRoot像个连接器，负者沟通，通过硬件感知来通知视图，进行用户之间的交互。
+
+### 9. <span id="android_base_9">Android事件分发机制</span>
+
+[图解 Android 事件分发机制](https://www.jianshu.com/p/e99b5e8bd67b)
+
+简述：
+
+* Activity --> ViewGroup --> View 责任链模式
+
+
+* dispatchTouchEvent 和 onTouchEvent 一旦 return true，事件就停止传递了（到达终点，没有谁再能收到这个事件），对于 return true 我们经常说事件被消费了，消费了的意思就是事件走到这里就是终点，不会往下传，没有谁能在收到这个事件了。
+* dispatchTouchEvent 和 onTouchEvent return false 的时候事件都会回传给父控件的 onTouchEvent处理。对于dispatchTouchEvent返回false的含义应该是：事件停止往子View传递和分发同时开始往父控件回溯（父控件的onTouchEvent开始从下往上回传直到某个onTouchEvent return true），事件分发机制就像递归，return false 的意义就是递归停止然后开始回溯。
+* 对于onTouchEvent return false就比较简单了，它就是不消费事件，并让事件继续往父控件的方向从下往上流动。
+* oninterceptTouchEvent，用于事件拦截，只存在于ViewGroup中，如果返回true就会交给自己的onTouchEvent处理，如果不拦截就是往子控件往下传递。默认是不会去拦截的，因为子View也需要这个事件，所以onInterceptTouchEvent拦截器return super和false是一样的，事件往子View的dispatchTouchEvent传递。
+* 对于ViewGroup，dispatchTouchEvent，之前说的return true就是终结传递，return false就是回溯到父View的onTouchEvent。那么ViewGroup怎样通过dispatchTouchEvent方法能把事件分发到自己的onTouchEvent处理呢？return false 和 true 都不行，那么只能通过 onInterceptTouchEvent把事件拦截下来给自己的onTouchEvent，所以ViewGroup的dispatchTouchEvent方法的super默认实现就是去调用onInterceptTouchEvent，记住这一点。
+
+**总结：**
+
+* 对于dispatchTouchEvent，onTouchEvent，return true 是终结事件传递，return false是回溯父View的onTouchEvent方法
+* ViewGroup想把事件分发给自己的onTouchEvent处理，需要拦截器onInterceptTouchEvent方法return true把事件拦截下来
+* ViewGroup的拦截器onInterceptTouchEvent默认是不拦截的，所以return super和return false是一样的
+* View没有拦截器，为了让View可以把事件分发给自己的onTouchEvent处理，View的dispatchTouchEvent默认实现（super）就是把事件分发给自己的onTouchEvent
+
+### 10. <span id="android_base_10">dp、sp、px的理解以及相互转换</span>
+
+**px**
+
+像素，对应于屏幕上的实际像素。在画分割线的可以用到，用其他单位画可能很模糊。
+
+**dp、dip**
+
+与密度无关的像素单位，基于屏幕的物理尺寸的抽象单位，在160dpi的屏幕上1dp相当于1px，一般用于空间大小的单位。
+
+**sp**
+
+与缩放无关的像素单位，类似dp，不用之处在于它还会根据用户字体大小配置而缩放。开发中指定字体大小时建议使用sp，因为它会根据屏幕密度和用户字体配置而适配
+
+```java
+DisplayMetrics dm = getResources().getDisplayMetrics();
+int dpi       = dm.densityDpi;    // 屏幕Dpi
+int width     = dm.widthPixels;   // 当前屏幕可用空间的宽(像素)
+int height    = dm.heightPixels;  // 高(像素)
+float density = dm.density;       // 屏幕密度
+float scale   = dm.scaledDensity; // 字体缩放比例
+
+// 获得设备的配置信息
+Configuration c = getResources().getConfiguration();
+int widthDp     = c.screenWidthDp;  // 当前屏幕可用空间的宽(dp)
+int heightDp    = c.screenHeightDp; // 高(dp)
+int dpi2        = c.densityDpi;     // 屏幕Dpi
+float fontScale = c.fontScale;      // 字体缩放比例
+```
+
+```java
+	/**
+     * 将px值转换为dip或dp值
+     * @param pxValue
+     * @return
+     */
+    public static int px2dip(Context context, float pxValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (pxValue / scale + 0.5f);
+    }
+
+    /**
+     * 将dip或dp值转换为px值
+     *
+     * @param dipValue
+     * @return
+     */
+    public static int dip2px(Context context, float dipValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale + 0.5f);
+    }
+
+    /**
+     * 将px值转换为sp值
+     * @param pxValue
+     * @return
+     */
+    public static int px2sp(Context context, float pxValue) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (pxValue / fontScale + 0.5f);
+    }
+
+    /**
+     * 将sp值转换为px值
+     * @param spValue
+     * @return
+     */
+    public static int sp2px(Context context, float spValue) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (spValue * fontScale + 0.5f);
+    }
+```
+
+### 11. <span id="android_base_11">RelativeLayout和LinearLayout在实现效果同等的情况下使用哪个？为什么？</span>
+
+[Android中RelativeLayout和LinearLayout性能分析](https://www.jianshu.com/p/8a7d059da746)
+
+选择LinearLayout，因为RelativeLayout在measure过程需要两次。
+
+```java
+	//RelativeLayout源码
+	View[] views = mSortedHorizontalChildren;
+    int count = views.length;
+    for (int i = 0; i < count; i++) {
+      /**/
+		measureChildHorizontal(child, params, myWidth, myHeight);
+    }
+	/**/
+	for (int i = 0; i < count; i++){
+      /***/
+      measureChild(child, params, myWidth, myHeight);
+	}
+
+	//LinearLayout
+	@Override
+  	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+    	if (mOrientation == VERTICAL) {
+      		measureVertical(widthMeasureSpec, heightMeasureSpec);
+    	} else {
+      		measureHorizontal(widthMeasureSpec, heightMeasureSpec);
+    	}
+  	}
+
+```
+
+从源码我们发现RelativeLayout会对子View做两次measure。这是为什么呢？首先RelativeLayout中子View的排列方式是基于彼此的依赖关系，而这个依赖关系可能和布局中View的顺序并不相同，在确定每个子View的位置的时候，就需要先给所有的子View排序一下。又因为RelativeLayout允许A B两个子View，横向上B依赖于A，纵向上A依赖于B，所以需要横向纵向分别进行一次排序测量。
+
+RelativeLayout另外一个性能问题：
+
+View的measure方法里对绘制过程做了一个优化，如果我们的子View没有要求强制刷新，而父View给子View的传入值也没有变化，也就说子View的位置没有变化，就不会做无谓的measure。但是上面已经说了RelativeLayout要做两次measure，而在做横向测量时，纵向的测量结果尚未完成，只好暂时使用myHeight传入子View系统，假如子View的Height不等于（设置了margin）myHeight的高度，那么measure中优化则不起作用，这一过程将进一步影响RelativeLayout的绘制性能。而LinearLayout则无这方面的担忧，解决这个问题也很好办，如果可以，尽量使用padding代替margin。
+
+**结论**
+
+* RelativeLayout会让子View调用两次onMeasure，LinearLayout再有weight时，也会调用子View两次onMeasure
+* RelativeLayout的子View如果高度和RelativeLayout不同，则会引发效率问题。当子View很复杂时，这个问题会更加严重。如果可以，尽量使用padding代替margin
+* 在不影响层级深度的情况下，使用LinaerLayout和FrameLayout而不是RelativeLayout
+
+### 12. <span id="android_base_12">布局相关的 \<merge>、\<viewstub> 控件作用及实现原理</span>
+
+[从源码角度分析ViewStub 疑问与原理](https://blog.csdn.net/androiddevelop/article/details/46632323)
+
+* ViewStub本身是一个视图，会被添加到界面上，之所以看不到是因为其设置了隐藏与不绘制
+* 当调用infalte或者ViewStub.setVisibilty(View.VISIBLE)时（两个都使用infalte逻辑），先从父视图上把当前ViewStub删除，再把加载的android:layout视图添加上
+* 把ViewStub LayoutParams 添加到加载的android:layout视图上，而其根节点的LayoutParams设置无效
+* ViewStub是指用来占位的视图，通过删除自己并添加android:layout视图达到懒加载效果
+
+
+
+
+### 13. <span id="android_base_13"> Fragment详解</span>
+
+#### 生命周期
+
+![](https://images2015.cnblogs.com/blog/945877/201611/945877-20161123093212096-2032834078.png)
+
+#### Fragment使用方式
+
+**静态使用**
+
+步骤：
+
+1. 创建一个类继承Fragment，重写onCreateView方法，来确定Fragment要显示的布局
+2. 在Activity的布局xml文件中添加< fragment >标签，并声明name属性为Fragemnt的全限定名，**而且必须给该控件(fragment)一个id或者tag**
+
+**动态使用**
+
+步骤：
+
+1. 在Activity的布局xml文件中添加一个FrameLayout，此控件是Fragment的容器。
+2. 准备好Fragment并实例化，获取Fragment管理器对象 FragmentManager。
+3. 然后通过Fragment管理器调用beginTransaction()，实例化FragmentTransaction对象，即开启事务。
+4. 执行事务并提交。FragmentTransaction对象有以下几种方法：
+   * add()  向Activity中添加一个Fragment
+   * remove() 从Activity中移除一个Fragment，如果被移除的Fragment没有添加到回退栈，这个Fragment实例将会被销毁
+   * replace() 使用一个Fragment替换当前的，实际上就是remove + add
+   * hide() 隐藏当前的Fragment，仅仅设为不可见，并不会销毁
+   * show() 显示之前隐藏的Fragment
+   * detach() 会将view从UI中移除，和remove()不同，此时fragment的状态依然由FragmentManager维护
+   * attach() 重建View视图，附加到UI上并显示
+   * commit() 提交事务
+
+**回退栈**
+
+Fragment的回退栈是用来保存每一次Fragment事务发生的变化，如果将Fragment任务添加到回退栈，当用户点击后退按钮时，将会看到上一次保存的Fragment，一旦Fragment完全从回退栈中弹出，用户再次点击后退键，则会退出当前Activity。
+
+FragmentTransaction.addToBackStack(String) 把当前事务的变化情况添加到回退栈。
+
+**Fragment与Activity之间的通信**
+
+Fragment依附于Activity存在，因此与Activity之间的通信可以归纳为以下几种：
+
+* 如果Activity中包含自己管理的Fragment的引用，可以通过访问其public方法进行通信
+* 如果Activiy中没有保存任何Fragment的引用，那么没关系，每个Fragment都有一个唯一的TAG或者ID，可以通过getFragmentManager.findFragmentByTag()或者findFragmentById()获得Fragment实例，然后进行操作
+* Fragment中可以通过getActivity()得到当前绑定的Activity实例，然后进行操作
+* setArguments(Bundle) / getArguments()
+
+**通信优化**
+
+接口实现
+
+**如何处理运行时配置发生变化**
+
+横竖屏切换时导致Fragment多次重建绘制：
+
+不要在构造函数中传递参数，最好通过setArguments()传递。
+
+在onCreate(Bundle savedInstanceState)中判断savedInstanceState为空时在重建，当发生重建时，原本的数据如何保持？类似Activity，Fragment也有onSaveInstanceState方法，在此方法中进行保存数据，然后在onCreate或者onCreateView或者onActivityCreated进行恢复都可以。
+
+
 
