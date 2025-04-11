@@ -1559,3 +1559,81 @@ public class DrawBoardView extends SurfaceView implements SurfaceHolder.Callback
 }
 
 ```
+
+
+### 22. <span id="android_base_22">HandlerThread</span>
+
+HandlerThread继承了Thread，所以它本质上是一个Thread，与普通Thread的区别在于，它不仅建立了一个线程，并且创立了消息队列，有自己的looper，可以让我们在自己的线程中分发和处理消息，并对外提供自己这个Looper对象的get方法。
+
+HandlerThread自带的Looper使它可以通过消息队列，来重复使用当前的线程，节省系统资源开销。这是他的优点也是缺点，每一个任务队列都是以队列的方式逐个被执行到，一旦队列中某个任务执行时间过长，那么就会导致后续的任务都会被延时执行。
+
+**使用步骤：**
+
+1. 创建HandlerThread实例并启动该线程
+
+   ```java
+   HandlerThread handlerThread = new HandlerThread("myThread");
+   handlerThread.start();
+   ```
+
+2. 构造循环消息处理机制
+
+   ```Java
+   private Handler.Callback mSubCallback = new Handler.Callback() {
+           //该接口的实现就是处理异步耗时任务的，因此该方法执行在子线程中
+           @Override
+           public boolean handleMessage(Message msg) {
+                   //doSomething  处理异步耗时任务的
+                   mUIHandler.sendMessage(msg1);   //向UI线程发送消息，用于更新UI等操作
+           }
+       };
+   ```
+
+3. 构造子线程的Handler
+
+   ```java
+   //由于这里已经获取了workHandle.getLooper()，因此这个Handler是在HandlerThread线程也就是子线程中
+   childHandler = new Handler(handlerThread.getLooper(), mSubCallback);
+
+   button.setOnClickListener(new OnClickListener() {
+       @Override
+       public void onClick(View v) {
+           //发送异步耗时任务到HandlerThread中,也就是上面的mSubCallback中
+           childHandler.sendMessage(msg);
+       }
+   });
+   ```
+
+4. 构建UI线程Handler处理消息
+
+   ```java
+   private Handler mUIHandler = new Handler(){
+           @Override
+           public void handleMessage(Message msg) {
+               //在UI线程中做的事情，比如设置图片什么的
+           }
+       };
+   ```
+
+**实现原理**
+
+	我们知道，在子线程创建一个Handler，需要手动创建Looper，即先Looper.parpare()，完了在Looper.loop()。HandlerThread的run方法：
+
+```java
+@Override
+    public void run() {
+        mTid = Process.myTid();  //获得当前线程的id
+        Looper.prepare();
+        synchronized (this) {
+            mLooper = Looper.myLooper();
+            //发出通知，当前线程已经创建mLooper对象成功，这里主要是通知getLooper方法中的wait
+            notifyAll();
+        }
+        //设置当前线程的优先级
+        Process.setThreadPriority(mPriority);
+        //该方法实现体是空的，子类可以实现该方法，作用就是在线程循环之前做一些准备工作，当然子类也可以不实现。
+        onLooperPrepared();
+        Looper.loop();
+        mTid = -1;
+    }
+```
