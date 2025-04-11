@@ -1642,3 +1642,11 @@ scheme是一种页面跳转协议。
 
 **示例**
 注册 SchemeActivity：
+
+在MainActivity里通过以下代码跳转到SchemeActivty：
+
+```java
+String url = "scheme://mtime/goodsDetail?goodsId=2333";
+Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+startActivity(intent);
+```
