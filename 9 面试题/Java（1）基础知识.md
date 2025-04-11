@@ -1,10 +1,18 @@
 ## 1. <span id="java_base_1">Java中 == 和 equals 和 hashCode 的区别</span>
+Java中的数据类型可分为两类，**基本数据类型**和**引用类型**。
+- **基本数据类型**：byte、short、char、int、long、float、double、boolean。
+- **引用类型**：类、接口、数组。
 
-Java中的数据类型可分为两类，基本数据类型和引用类型。
-- 基本数据类型：byte、short、char、int、long、float、double、boolean。他们之间的比较用双等号（==），比较的是**值**。
-- 引用类型：类、接口、数组。当他们用双等号（==）进行比较的时候，比较的是他们在**内存中的存放地址**。对象是放在堆中的，栈中存放的是对象的引用（地址）。由此可见，**双等号是对栈中的值进行比较的**。如果要比较堆中对象是否相同，那么就要重写equals方法了。
+**==**
 
-默认情况下（没有覆盖equals方法）下的equals方法都是调用Object类的equals方法，而Object的equals方法主要是用于判断**对象的内存地址引用是不是同一个地址**（是不是同一个对象）。下面是Object类中的equals方法：
+- **基本数据类型**：用双等号（==）比较的是**值**。
+- **引用类型**：用双等号（==）比较的是他们在**内存中的存放地址**。对象是放在堆中的，栈中存放的是对象的引用（地址）。由此可见，**双等号是对栈中的值进行比较的**。如果要比较堆中对象是否相同，那么就要重写equals方法了。
+
+**equals**
+
+- Java中不可以使用equals对比基本数据类型。
+
+默认情况下调用Object类的equals方法，主要是用于判断**对象的内存地址是不是相等**（即是不是指向同一个对象）。下面是Object类中的equals方法：
 
 ```java
 public boolean equals(Object obj) {  
@@ -12,41 +20,97 @@ public boolean equals(Object obj) {
 } 
 ```
 
-定义的equals方法与==是等效的。
+Object类中的equals方法与==是等效的。
 
-**但是**，要是类中覆盖了equals方法，那么就要根据具体代码来确定equals方法的作用了。**覆盖后的一般都是通过对象的内容是否相等来判断对象是否相等。**下面是String类对equals方法进行了重写：
-
-```java
-public boolean equals(Object anObject) {  
-    if (this == anObject) {  
-        return true;  
-    }  
-    if (anObject instanceof String) {  
-        String anotherString = (String)anObject;  
-        int n = count;  
-        if (n == anotherString.count) {  
-        char v1[] = value;  
-        char v2[] = anotherString.value;  
-        int i = offset;  
-        int j = anotherString.offset;  
-        while (n-- != 0) {  
-            if (v1[i++] != v2[j++])  
-            return false;  
-        }  
-        return true;  
-        }  
-    }  
-    return false;  
-}
-```
+**但是**，要是类中覆盖了equals方法，那么就要根据具体代码来确定equals方法的作用了。**覆盖后的一般都是通过对象的内容是否相等来判断对象是否相等。** 
 
 在 Object#equals 方法注释上，也给出了重写 equals 函数要遵守的规则：自反性、对称性、传递性和一致性，并且给出了具体示例。注释中还给出了，重写 equals 方法时也要重写 hashCode 方法，从而维持 hashCode 的语义，即如果对象相等，那么他们的哈希值必须相同。
+
+**hashCode**
 
 hashCode()方法返回的就是一个数值，从方法名上来看，其目的就是生成一个hash码，hash码的主要用途就是在**对对象进行散列的时候作为key输入**。
 
 参考自：[http://blog.csdn.net/hla199106/article/details/46907725](http://blog.csdn.net/hla199106/article/details/46907725)
 
+**补充：重写 equals 时为什么一定要重写 hashCode？**
+首先我们要明确equals和hashCode的关系：
+1. hashCode相等，equals不一定相等，两个类也不一定相同。
+2. equals相等，则hashCode一定相等。
 
+我们从下面这个例子入手：
+```java
+import java.util.HashSet;  
+import java.util.Set;  
+public class HashCodeExample {  
+    public static void main(String[] args) {  
+        Set<String> set = new HashSet();  
+        set.add("Java");  
+        set.add("Java");  
+        set.add("MySQL");  
+        set.add("MySQL");  
+        set.add("Redis");  
+        System.out.println("Set 集合长度:" + set.size());  
+        System.out.println();  
+        // 打印 Set 中的所有元素  
+        set.forEach(d -> System.out.println(d));  
+    } 
+ }
+----------------------------------------
+程序输出结果：
+Set 集合长度:3
+
+Java
+MySQL
+Redis
+```
+从上述结果可以看出，重复的数据已经被 Set 集合“合并”了，这也是 Set 集合最大的特点：去重。
+
+上文提到覆盖后的equals方法一般是通过对象的内容是否相等来判断对象是否相等的。如果我们只重写equals方法，那么就会出现下面这种情况。如下代码所示：
+
+```java
+public class EqualsExample {  
+    public static void main(String[] args) {  
+        // 对象 1  
+        Persion p1 = new Persion();  
+        p1.setName("Java");  
+        p1.setAge(18);  
+        // 对象 2  
+        Persion p2 = new Persion();  
+        p2.setName("Java");  
+        p2.setAge(18);  
+        // 创建 Set 集合  
+        Set<Persion> set = new HashSet<Persion>();  
+        set.add(p1);  
+        set.add(p2);  
+        // 打印 Set 中的所有数据  
+        set.forEach(p -> {  
+            System.out.println(p);  
+        });  
+    }  
+}  
+class Persion {  
+    private String name;  
+    private int age;  
+    // 只重写了 equals 方法  
+    @Override  
+    public boolean equals(Object o) {  
+        if (this == o) return true; // 引用相等返回 true  
+        // 如果等于 null，或者对象类型不同返回 false  
+        if (o == null || getClass() != o.getClass()) return false;  
+        // 强转为自定义 Persion 类型  
+        Persion persion = (Persion) o;  
+        // 如果 age 和 name 都相等，就返回 true  
+        return age == persion.age &&  
+                Objects.equals(name, persion.name);  
+    }  
+    // 省略get set toString等方法
+}
+----------------------------------------
+程序输出结果：
+Persion{name='Java', age=18}
+Persion{name='Java', age=18}
+```
+在上述代码中，我们重写equals方法，只要age name都相等，就返回true，那么在我们自定义的语义中，p1和p2是同一个对象。但是从上面的输出结果来看，Set中没有对p1和p2去重，即他们并不是相等。这就和我们之前提到的equals和hashCode关系的第2条相悖，因此必须重写hashCode，确保语义上的一致性。
 
 ## 2. <span id="java_base_2">int、char、long 各占多少字节数</span>
 
