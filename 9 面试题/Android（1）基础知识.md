@@ -36,6 +36,234 @@
     }
 ```
 
+### 13. <span id="android_base_13"> Fragment详解</span>
+
+#### 生命周期
+
+![](https://images2015.cnblogs.com/blog/945877/201611/945877-20161123093212096-2032834078.png)
+
+#### Fragment使用方式
+
+**静态使用**
+
+步骤：
+
+1. 创建一个类继承Fragment，重写onCreateView方法，来确定Fragment要显示的布局
+2. 在Activity的布局xml文件中添加< fragment >标签，并声明name属性为Fragemnt的全限定名，**而且必须给该控件(fragment)一个id或者tag**
+
+**动态使用**
+
+步骤：
+
+1. 在Activity的布局xml文件中添加一个FrameLayout，此控件是Fragment的容器。
+2. 准备好Fragment并实例化，获取Fragment管理器对象 FragmentManager。
+3. 然后通过Fragment管理器调用beginTransaction()，实例化FragmentTransaction对象，即开启事务。
+4. 执行事务并提交。FragmentTransaction对象有以下几种方法：
+   * add()  向Activity中添加一个Fragment
+   * remove() 从Activity中移除一个Fragment，如果被移除的Fragment没有添加到回退栈，这个Fragment实例将会被销毁
+   * replace() 使用一个Fragment替换当前的，实际上就是remove + add
+   * hide() 隐藏当前的Fragment，仅仅设为不可见，并不会销毁
+   * show() 显示之前隐藏的Fragment
+   * detach() 会将view从UI中移除，和remove()不同，此时fragment的状态依然由FragmentManager维护
+   * attach() 重建View视图，附加到UI上并显示
+   * commit() 提交事务
+
+**回退栈**
+
+Fragment的回退栈是用来保存每一次Fragment事务发生的变化，如果将Fragment任务添加到回退栈，当用户点击后退按钮时，将会看到上一次保存的Fragment，一旦Fragment完全从回退栈中弹出，用户再次点击后退键，则会退出当前Activity。
+
+FragmentTransaction.addToBackStack(String) 把当前事务的变化情况添加到回退栈。
+
+**Fragment与Activity之间的通信**
+
+Fragment依附于Activity存在，因此与Activity之间的通信可以归纳为以下几种：
+
+* 如果Activity中包含自己管理的Fragment的引用，可以通过访问其public方法进行通信
+* 如果Activiy中没有保存任何Fragment的引用，那么没关系，每个Fragment都有一个唯一的TAG或者ID，可以通过getFragmentManager.findFragmentByTag()或者findFragmentById()获得Fragment实例，然后进行操作
+* Fragment中可以通过getActivity()得到当前绑定的Activity实例，然后进行操作
+* setArguments(Bundle) / getArguments()
+
+**通信优化**
+
+接口实现
+
+**如何处理运行时配置发生变化**
+
+横竖屏切换时导致Fragment多次重建绘制：
+
+不要在构造函数中传递参数，最好通过setArguments()传递。
+
+在onCreate(Bundle savedInstanceState)中判断savedInstanceState为空时在重建，当发生重建时，原本的数据如何保持？类似Activity，Fragment也有onSaveInstanceState方法，在此方法中进行保存数据，然后在onCreate或者onCreateView或者onActivityCreated进行恢复都可以。
+
+
+
+### 14. <span id="android_base_14">Json、XML</span>
+
+Json是一种轻量级的数据交换格式，具有良好的可读和便于编写的特性。XML即扩展标记语言，用来标记电子文件使其具有结构性的标记语言，可以用来标记数据。定义数据类型，是一种允许用户对自己的标记语言进行定义的源语言。
+
+JSON在编码和解码上优于XML，并且数据体积更下，解析更快，与JavaScript交互更加方便，但是对数据的描述性较XML差。
+
+
+
+### 15. <span id="android_base_15">Assets目录与res目录的区别</span>
+
+	assets目录与res下的raw、drawable目录一样，也可用来存放资源文件，但它们三者区别如下：
+
+|             | assets   | res/raw   | res/drawable   |
+| ----------- | -------- | --------- | -------------- |
+| 获取资源方式      | 文件路径+文件名 | R.raw.xxx | R.drawable.xxx |
+| 是否被压缩       | false    | false     | true(失真压缩)     |
+| 能否获取子目录下的资源 | true     | false     | false          |
+
+res/raw和assets的区别：
+
+	res/raw中的文件会被映射到R.java文件中，访问的时候直接使用资源ID即可，assets文件夹下的文件不会被映射到R文件中，访问的时候需要AssetManager类。
+	
+	res/raw不可以有目录结构，而assets则可以有目录结构，也就是assets目录下可以再建立文件夹。
+	
+	读取res/raw下的文件资源，通过以下方式获取输入流来进行写操作：
+
+```java
+InputStream is = getResources().openRawResource(R.id.filename);
+```
+
+	读取assets下的文件资源，通过以下方式获取输入流进行写操作，使用AssetManager。
+
+注意：
+
+1. AssertManager中不能处理单个超过1M的文件，而raw没有这个限制
+2. assets文件夹是存放不进行编译加工的原生文件，即该文件夹里面的文件不会像xml、java文件被预编译，可以存放一些图片、html、js等等
+
+
+
+### 16. <span id="android_base_16">View视图绘制过程原理</span>
+
+	View视图绘制需要搞清楚两个问题，一个是从哪里开始绘制，一个是怎么绘制？
+
+从哪里开始绘制？我们平常使用Activity的时候，都会调用setContentView来设置布局文件，没错，视图绘制就是从这个方法开始。
+
+怎么绘制？
+
+在我们的Activity中调用了setContentView之后，会转而执行PhoneWindow的setContentView，在这个方法里面会判断我们存放内容的ViewGroup（这个ViewGroup可以是DecorView也可以是DecorView的子View）是否存在。不存在的话，则会创建一个DecorView处理，并且会创建出相应的窗体风格，存在的话则会删除原先的ViewGroup上面已有的View，接着会调用LayoutInflater的inflate方法以pull解析的方式将当前布局文件中存在的View通过addView的方式添加到ViewGroup上面来，接着在addView方法里面就会执行我们常见的invalidate方法了，这个方法不只是在View视图绘制的过程中经常用到，其实动画的实现原理也是不断的调用这个方法来实现视图不断重绘的，执行这个方法的时候会调用父View的invalidateChild方法，这个方法是属于ViewParent的，ViewGroup以及ViewRootImpl中都会他进行了实现，invalidateChild里面主要做的是就是通过do while循环一层一层计算出当前View的四个点所对应的矩阵在ViewRoot中所对应的位置，那么有了这个矩阵的位置之后最终都会执行ViewRootImpl的invalidateChildInParent方法，执行这个方法的时候首先会检查当前线程是不是主线程，因为我们要开始准备更新UI了，不是主线程的话是不允许更新UI的，接着就会执行scheduleTraversals方法了，这个方法会通过handler来执行doTraversal方法，在这个方法里面就见到了我们平常所熟悉的View视图绘制的起点方法performTraversals了。
+
+那么接下来就是真正的视图绘制流程了，大体上讲View的绘制流程经历了Measure测量、Layout布局以及Draw绘制的三个过程，具体来讲是从ViewRootImpl的performTraversals方法开始，首先执行的将是performMeasure方法，这个方法里面会传入两个MeasureSpec类型的参数，它在很大程度上决定了View的尺寸规格，对于DecorView来说宽高的MeasureSpec值的获取与窗口尺寸以及自身的LayoutParams有关，对于普通View来说其宽高的MeasureSpec值获取由父容器以及自身的LayoutParams属性共同决定，在performMeasure里面会执行measure方法，在measure方法里面会执行onMeasure方法，到这里Measure测量过程对View与ViewGroup来说是没有区别的，但是从onMeasure开始两者有差别了，因为View本身已经不存在子View了，所以他onMeasure方法将执行setMeasuredDimension方法，该方法会设置View的测量值，但是对于ViewGroup来说，因为它里面还存在着子View，那么我们就需要继续测量它里面的子View了，调用的方法是measureChild方法，该方法内部又会执行measure方法，而measure方法转而又会执行onMeasure方法，这样不断的递归进行下去，直到整个View树测量结束，这样performMeasure方法执行结束了。接着便是执行performLayout方法了，performMeasure只是测量出了View树中View的大小了，但是还不知道View的位置，所以也就出现了performLayout方法了，performLayout方法首先会执行layout方法，以确定View自身的位置，如果当前View是ViewGroup的话，则会执行onLayout方法。在onLayout方法里面又会递归的执行layout方法，直到当前遍历到的View不再是ViewGroup为止，这样整个layout布局过程就结束了。在View树中View的大小以及位置都确定之后，接下来就是真正的绘制View显示在界面的过程了，该过程首先从performDraw方法开始，performDraw首先会执行draw方法，在draw方法中首先绘制背景，接着调用onDraw方法绘制自己，如果当前View是ViewGroup的话，还要调用dispatchDraw方法绘制当前ViewGroup的子View，而dispatchDraw方法里面实际上是通过drawChild方法间接调用draw方法形成递归绘制整个View树，直到当前View不再是ViewGroup为止，这样整个View的绘制过程就结束了。
+
+总结：
+
+* ViewRootImpl会调用performTraversals()，其内部会调用performMeasure()、performLayout、performDraw
+* performMeasure会调用最外层的ViewGroup的measure() --> onMeasure() ，ViewGroup的onMeasure()是抽象方法，但其提供了measureChildren()，这之中会遍历子View然后循环调用measureChild()，传入MeasureSpec参数，然后调用子View的measure()到View的onMeasure() -->setMeasureDimension(getDefaultSize(),getDefaultSize())，getDefaultSize()默然返回measureSpec的测量数值，所以继承View进行自定义的wrap_content需要重写。
+* performLayout()会调用最外层的ViewGroup的layout(l,t,r,b)，本View在其中使用setFrame()设置本View的四个顶点位置。在onLayout(抽象方法)中确定子View的位置，如LinearLayout会遍历子View，循环调用setChildFrame() --> 子View.layout()
+* performDraw()会调用最外层的ViewGroup的draw()方法，其中会先后调用background.draw()绘制背景，onDraw(绘制自己)，dispatchDraw(绘制子View)、onDrawScrollBars(绘制装饰)
+* MeasureSpec由两位SpecMode(UNSPECIFIED、EXACTLY(对于精确值和match_parent)、AL_MOST(对应warp_content))和三十位SpecSize组成一个int，DecorView的MeasureSpec由窗口大小和其LayoutParams决定，其他View有父View的MeasureSpec和本View的LayoutParams决定。ViewGroup中有getChildMeasureSpec()来获取子View的MeasureSpec。
+
+### 17. <span id="android_base_17">解决滑动冲突的方式？</span>
+
+	在自定义View的过程中经常会遇到滑动冲突问题，一般滑动冲突的类型有三种：（1）外部View滑动方向和内部View滑动方向不一致；（2）外部View滑动方向和内部View滑动方向一致；（3）上述两种情况的嵌套
+	
+	一般解决滑动冲突都是利用事件分发机制，有两种方式即外部拦截法和内部拦截法：
+
+**外部拦截法：**
+
+实现思路是事件首先是通过父容器的拦截处理，如果父容器不需要该事件，则不拦截，将事件传递到子View上面，如果父容器决定拦截的话，则在父容器的onTouchEvent里面直接处理该事件，这种方法符合事件分发机制；具体实现是修改父容器的onInterceptTouchEvent方法，在达到某一条件的时候，让该方法直接返回true，就可以把事件拦截下来进而调用自己的onTouchEvent方法来处理，但是有一点需要注意的是，如果想让子View能够收到事件，我们需要在onInterceptTouchEvent方法里面判断是DOWN事件的话，就返回false，这样后续的MOVE以及UP事件才有机会传递到子View上面，如果你直接在onInterceptTouchEvent方法里面DOWN情况下返回了true，那么后续的MOVE以及UP事件酱由当前View的onTouchEvent处理了，这样的拦截根本没有意义的，拦截只是在满足一定条件下才会拦截，并不是所有情况下都要拦截。
+
+**内部拦截法：**
+
+实现思路是
+
+
+
+### 18. <span id="android_base_18">APP Build过程</span>
+
+Android Studio点击build按钮之后，AS就会编译整个项目，并将apk安装到手机上，这个过程就是Android工程编译打包过程。主要的流程是：
+
+编译 --> DEX --> 打包 --> 签名
+
+**APK构建概述**
+![](https://upload-images.jianshu.io/upload_images/2707477-39b6ba4609909c3a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700)
+
+主要有两个过程：
+
+* 编译过程
+
+  输入是本工程的文件以及依赖的各种库文件
+
+  输出是dex文件和编译后的资源文件
+
+* 打包过程
+
+  配合Keystore对上述的输出进行签名对齐，生成最终的apk文件
+
+**APK构建步骤详解**
+![](https://upload-images.jianshu.io/upload_images/2707477-43f77a6cdf804a59.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/536)
+
+主要分为六个步骤：
+
+1. 通过aapt打包res资源文件，生成R.java文件、resource.arsc和res文件（二进制&非二进制如res/raw和pic保持原样）
+2. 处理.aidl文件，生成对应的Java接口文件
+3. 通过Java Compiler编译R.java、Java接口文件、Java源文件，生成.class文件
+4. 通过dex命令，将.class文件和第三方库中的.class文件处理生成classes.dex
+5. 通过apkbuilder工具，将aapt生成的resource.arsc和res文件、assets文件和classes.dex一起打包生成apk
+6. 通过Jarsigner工具，对上面的apk进行debug或release签名
+7. 通过zipalign工具，将签名后的apk进行对齐处理
+
+参考自：
+
+[https://www.jianshu.com/p/e86aadcb19e0](https://www.jianshu.com/p/e86aadcb19e0)
+
+[http://mouxuejie.com/blog/2016-08-04/build-and-package-flow-introduction/](http://mouxuejie.com/blog/2016-08-04/build-and-package-flow-introduction/)
+
+
+
+### 19. <span id="android_base_19">Android利用scheme协议进行跳转</span>
+
+scheme是一种页面跳转协议。
+
+通过定义自己的scheme协议，可以非常方便的跳转App中的各个页面；
+
+通过scheme协议，服务器可以定制化告诉App跳转到App内部页面。
+
+**Scheme协议在Android中的使用场景**
+
+* H5跳转到native页面
+* 客户端获取push消息中后，点击消息跳转到App内部页面
+* App根据URL跳转到另外一个App指定页面
+
+**示例**
+注册 SchemeActivity：
+
+```xml
+<activity android:name=".SchemeActivity">
+    <intent-filter>
+        //配置协议
+        <data android:scheme="scheme" android:host="mtime" android:path="/goodsDetail"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+    </intent-filter>
+</activity>
+```
+
+在MainActivity里通过以下代码跳转到SchemeActivty：
+
+```java
+String url = "scheme://mtime/goodsDetail?goodsId=2333";
+Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+startActivity(intent);
+```
+
+然后我们可以在SchemeActivity获取到请求的参数等等信息：
+
+```java
+Uri uri = getIntent().getData();
+assert uri != null;
+String host = uri.getHost();
+String path = uri.getPath();
+String query = uri.getQuery();
+String param = uri.getQueryParameter("goodsId");
+Toast.makeText(this, host + "  " + path + "  " + query + "  " + param, Toast.LENGTH_SHORT).show();
+```
+
+
 2. 资源内存不足导致优先级低的Activity被杀死
 
    优先级：前台Activity > 可见但非前台Activity > 后台Activity
