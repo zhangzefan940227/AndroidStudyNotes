@@ -11,8 +11,7 @@ Java中的数据类型可分为两类，**基本数据类型**和**引用类型*
 **equals**
 
 - Java中不可以使用equals对比基本数据类型。
-
-默认情况下调用Object类的equals方法，主要是用于判断**对象的内存地址是不是相等**（即是不是指向同一个对象）。下面是Object类中的equals方法：
+- **引用类型**：默认情况下调用Object类的equals方法，主要是用于判断**对象的内存地址是不是相等**（即是不是指向同一个对象）。下面是Object类中的equals方法：
 
 ```java
 public boolean equals(Object obj) {  
