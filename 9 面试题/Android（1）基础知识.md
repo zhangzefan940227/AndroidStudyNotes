@@ -1,6 +1,3 @@
-
-## Android 部分（一）基础知识点
-
 ### 1. <span id="android_base_1">四大组件是什么？</span>
 
 四大组件：Activity、Service、BroadcastReceiver、ContentProvider。
@@ -1445,3 +1442,120 @@ MVP模式的整个核心流程：
 View与Model并不直接交互，而是使用Presenter作为View与Model之间的桥梁。其实Presenter中同时持有View层的interface的引用以及Model层的引用，而View层持有Presenter层引用。当View层某个界面需要展示某些数据的时候，首先会调用Presenter层的引用，然后Presenter层会调用Model层请求数据，当Model层数据加载成功之后会调用Presenter层的回调方法通知Presenter层数据加载情况，最后Presenter层在调用View层的接口将加载后的数据展示给用户。
 
 ![](http://upload-images.jianshu.io/upload_images/3985563-03352e00ce8b4083.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+
+### 21.<span id="android_base_21"> SurfaceView</span>
+
+SurfaceView继承至View的，与View的主要区别在于：
+
+* View主要适用于主动更新的情况下，而SurfaceView主要适用于被动更新，例如频繁的刷新
+* View在主线程中对画面进行更新，而SurfaceView通常会通过一个子线程进行页面的刷新
+* View在绘图时没有使用双缓存机制，而SurfaceView在底层机制中已经实现了双缓存机制
+
+**总结一句话就是：如果自定义View需要频繁的刷新，或者刷新时数据处理量比较大，那么就可以考虑使用SurfaceView来取代View。**
+
+```java
+/**
+ * 用Surface实现画板
+ */
+public class DrawBoardView extends SurfaceView implements SurfaceHolder.Callback, Runnable {
+
+    private SurfaceHolder mSurfaceHolder;
+    private Canvas mCanvas;
+    private volatile boolean mIsDrawing;
+    private Paint mPaint;
+    private Path mPath;
+
+    public DrawBoardView(Context context) {
+        super(context);
+        init();
+    }
+
+    public DrawBoardView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public DrawBoardView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
+        mSurfaceHolder = getHolder();
+        mSurfaceHolder.addCallback(this);
+        setFocusable(true);
+        setFocusableInTouchMode(true);
+        this.setKeepScreenOn(true);
+
+        mPaint = new Paint();
+        mPaint.setColor(Color.BLUE);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeWidth(10);
+        mPaint.setAntiAlias(true);
+        mPath = new Path();
+    }
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        mIsDrawing = true;
+        new Thread(this).start();
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        mIsDrawing = false;
+    }
+
+    @Override
+    public void run() {
+        long start = System.currentTimeMillis();
+        while (mIsDrawing) {
+            draw();
+        }
+        long end = System.currentTimeMillis();
+        // 50 - 100
+        if (end - start < 100) {//保证线程运行时间不少于100ms
+            try {
+                Thread.sleep(100 - (end - start));
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private synchronized void draw() {
+        try {
+            mCanvas = mSurfaceHolder.lockCanvas();
+            mCanvas.drawColor(Color.WHITE);
+            mCanvas.drawPath(mPath,mPaint);
+        } catch (Exception e) {
+        } finally {
+            if (mCanvas != null){
+                mSurfaceHolder.unlockCanvasAndPost(mCanvas);
+            }
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                mPath.moveTo(event.getX(),event.getY());
+                break;
+            case MotionEvent.ACTION_MOVE:
+                mPath.lineTo(event.getX(),event.getY());
+                break;
+            case MotionEvent.ACTION_UP:
+
+                break;
+        }
+        return true;
+    }
+
+}
+
+```
