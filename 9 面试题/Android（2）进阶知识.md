@@ -1,3 +1,5 @@
+## Android 部分（二）高级知识点
+
 ### 1. <span id="android_advance_1">Android 系统架构</span>
 
 - 应用层
@@ -6,7 +8,7 @@
 - 硬件抽象层
 - Linux 内核层	
 
-​	![](https://upload-images.jianshu.io/upload_images/8945592-b2cc038f019b9362.png?imageMogr2/auto-orient/)
+	![](./img/auto-orient.webp)
 
 
 
@@ -52,7 +54,7 @@
    3. 启动各种启动服务
 4. Launcher 启动过程
 
-![](https://i.loli.net/2018/11/10/5be62e0360968.png)
+![](./img/5be62e0360968.png)
 
 
 

@@ -2,7 +2,11 @@
 
 ### 1.  <span id="java_structure_1">常用数据结构简介</span>
 
+
+
 ### 2. <span id="java_structure_2">并发集合了解哪些？</span>
+
+
 
 ### 3. <span id="java_structure_3">HashMap</span>
 
@@ -375,12 +379,12 @@ HashMap的大小很简单，不是实时计算的，而是每次新增加Entry�
 **面试问题**
 
 **1. 构造函数中initialCapacity与loadFactor两个参数**
-​	HashMap(int initialCapacity,float loadFactor)：构造一个指定容量和负载因子的空HashMap。
+	HashMap(int initialCapacity,float loadFactor)：构造一个指定容量和负载因子的空HashMap。
 
 这两个参数是影响HashMap性能的重要参数，其中容量表示哈希表中桶的数量，初始容量是创建哈希表时的容量，负载因子是哈希表在其容量增加之前可以达到多满的一种尺度，它衡量的是一个散列表的空间的使用程度，负载因子越大表示散列表的填充程度越高，反之越小。
 
 **2. size为什么必须是2的整数次幂**
-​	这是为了服务key映射到index的hash算法的，公式 index=hashcode(key)&(length-1)。HashMap中数组的size必须是2的幂，是为了将key的hash值均匀的分布在数组的索引上。HashMap中使用indexFor方法来计算key所在的数组的索引，实现逻辑为key的hash值与数组长度值减一进行与运算，代码如下：
+	这是为了服务key映射到index的hash算法的，公式 index=hashcode(key)&(length-1)。HashMap中数组的size必须是2的幂，是为了将key的hash值均匀的分布在数组的索引上。HashMap中使用indexFor方法来计算key所在的数组的索引，实现逻辑为key的hash值与数组长度值减一进行与运算，代码如下：
 
 ```java
 	static int indexFor(int h, int length) {
@@ -389,16 +393,16 @@ HashMap的大小很简单，不是实时计算的，而是每次新增加Entry�
 ```
 
 **3. HashMap的key为什么一般用字符串比较多，能用其他对象，或者自定义的对象嘛？**
-​	能用其他对象，必须是不可变的，但是自实现的类必须重写equals()和hashCode()方法，否则会调用默认的Object类的对应方法。
+	能用其他对象，必须是不可变的，但是自实现的类必须重写equals()和hashCode()方法，否则会调用默认的Object类的对应方法。
 
 **4. HashMap的key和value都能为null嘛？如果key为null，那么它是怎么样查找值的？**
-​	如果key为null，则直接从哈希表的第一个位置table[0]对应的链表上查找，由putForNullKey()实现，记住，key为null的键值对永远都放在以table[0]为头节点的链表中。
+	如果key为null，则直接从哈希表的第一个位置table[0]对应的链表上查找，由putForNullKey()实现，记住，key为null的键值对永远都放在以table[0]为头节点的链表中。
 
 **5. 使用HashMap时一般使用什么类型的元素作为Key？**
-​	一般是String、Integer，这些类是不可变的，并且这些类已经规范的复写了hashCode以及equals方法，作为不可变类天生是线程安全的，而且可以很好的优化比如可以缓存hash值，避免重复计算等等。
+	一般是String、Integer，这些类是不可变的，并且这些类已经规范的复写了hashCode以及equals方法，作为不可变类天生是线程安全的，而且可以很好的优化比如可以缓存hash值，避免重复计算等等。
 
 **6. HashTable和HashMap的区别有哪些？**
-​	都实现了Map接口，主要区别在于：线程安全性，同步以及性能。
+	都实现了Map接口，主要区别在于：线程安全性，同步以及性能。
 
 - HashMap是非线程安全的，效率肯定高于线程安全的HashTable
 - HashMap允许null作为一个entry的key或者value，而HashTable不允许
@@ -429,7 +433,7 @@ HashMap的大小很简单，不是实时计算的，而是每次新增加Entry�
 
 存储10,20,30,40,50的数组的示意图如下：
 
-![](http://images.cnitblog.com/blog/497634/201402/231243264043298.jpg)
+![](./img/231243264043298.jpg)
 
 数组的特点是：
 
@@ -439,17 +443,17 @@ HashMap的大小很简单，不是实时计算的，而是每次新增加Entry�
 
 单链表是链表的一种，它由节点组成，每个节点都包含下一个节点的指针。
 
-![](http://images.cnitblog.com/blog/497634/201402/231244591436996.jpg)
+![](./img/231244591436996.jpg)
 
 表头为空，表头的后继节点是“节点10”（数据是10的节点），“节点10”的后继节点是“节点20”（数据为20的节点）......
 
 单链表删除节点：
 
-![](http://images.cnitblog.com/blog/497634/201402/231246130639479.jpg)
+![](./img/231246130639479.jpg)
 
 单链表添加节点：
 
-![](http://images.cnitblog.com/blog/497634/201402/231246431888916.jpg)
+![](./img/231246431888916.jpg)
 
 单链表的特点是：
 
@@ -459,15 +463,15 @@ HashMap的大小很简单，不是实时计算的，而是每次新增加Entry�
 
 双向链表是链表的一种，和单链表一样，双链表也是由节点组成，它的每个数据节点中都有两个指针，分别指向直接后继和直接前驱。所以，从双向链表中的任意一个节点开始，都可以很方便的访问它的前驱结点和后继结点，一般我们都构造双向循环链表。
 
-![](http://images.cnitblog.com/blog/497634/201402/231247423393589.jpg)
+![](./img/231247423393589.jpg)
 
 双链表删除节点：
 
-![](http://images.cnitblog.com/blog/497634/201402/231248185524615.jpg)
+![](./img/231248185524615.jpg)
 
 双链表添加节点：
 
-![](http://images.cnitblog.com/blog/497634/201402/231248185524615.jpg)
+![](./img/231248185524615.jpg)
 
 **总结**
 
@@ -547,4 +551,3 @@ public int getLength(Node head){
 **链表添加一个元素**
 
 链表的插入操作分为头插法、尾插法和随机节点插入法。当然数据结构讲的时候也是针对一个已经构造好的（保存了链表头部节点和尾部节点引用）
-

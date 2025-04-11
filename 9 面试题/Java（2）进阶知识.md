@@ -66,7 +66,7 @@ Java中的异常分为可查异常和不可查异常。
 
 **Java异常类层次结构图：**
 
-![](https://upload-images.jianshu.io/upload_images/81578-ce7c03b8b1930315.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/600)
+![](./img/600.webp)
 
 从上图可以看出Java通过API中Throwable类的众多子类描述各种不同的异常。因而，Java异常都是对象，是Throwable子类的实例。
 
@@ -229,7 +229,7 @@ public class Test{
 
   编译器把Annotation记录在class文件中，当运行Java程序时，JVM会保留该Annotation，程序可以通过反射获取该Annotation的信息。
 
-```
+```java
 //name=value形式
 //@Retention(value=RetentionPolicy.RUNTIME)
 
@@ -532,7 +532,7 @@ String string1 = "abcd";
 String string2 = "abcd";
 ```
 
-![](http://www.hollischuang.com/wp-content/uploads/2016/03/QQ20160302-3.png)
+![](./img/QQ20160302-3.png)
 
 **如果字符串可变的话，当两个引用指向同一个字符串时，对其中一个做修改就会影响另外一个。**
 
@@ -543,7 +543,7 @@ str = "456";
 
 执行过程如下：
 
-![](https://upload-images.jianshu.io/upload_images/2466095-96d3d70753c70c1c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/700)
+![](./img/700-1744390847859-15.webp)
 
 执行第一行代码时，在堆上新建一个对象实例 123，str 是一个指向该实例的引用，**引用包含的仅仅只是实例在堆上的内存地址而已**。执行第二行代码时，仅仅只是改变了 str 这个引用的地址，指向了另外一个实例 456。**给 String 赋值仅仅只是改变了它的引用而已，并不会真正的去改变它本来内存地址上的值**。这样的好处也是显而易见的，最简单的当存在多个 String 的引用指向同一个内存地址时，改变其中一个引用的值并不会其他引用的值造成影响。
 
