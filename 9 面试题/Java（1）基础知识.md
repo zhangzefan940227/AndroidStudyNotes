@@ -1,4 +1,4 @@
-## 1. <span id="java_base_1">Java中 == 和 equals 和 hashCode 的区别</span>
+# 1. <span id="java_base_1">Java中 == 和 equals 和 hashCode 的区别</span>
 Java中的数据类型可分为两类，**基本数据类型**和**引用类型**。
 - **基本数据类型**：byte、short、char、int、long、float、double、boolean。
 - **引用类型**：类、接口、数组。
@@ -111,7 +111,7 @@ Persion{name='Java', age=18}
 ```
 在上述代码中，我们重写equals方法，只要age name都相等，就返回true，那么在我们自定义的语义中，p1和p2是同一个对象。但是从上面的输出结果来看，Set中没有对p1和p2去重，即他们并不是相等。这就和我们之前提到的equals和hashCode关系的第2条相悖，因此必须重写hashCode，确保语义上的一致性。
 
-## 2. <span id="java_base_2">int、char、long 各占多少字节数</span>
+# 2. <span id="java_base_2">int、char、long 各占多少字节数</span>
 
 | 类型     | 位数   | 字节数  |
 | ------ | ---- | ---- |
@@ -126,7 +126,7 @@ Persion{name='Java', age=18}
 
 
 
-## 3. <span id="java_base_3">int 和 Integer 的区别</span>
+# 3. <span id="java_base_3">int 和 Integer 的区别</span>
 
 Java 为每一个基本数据类型都引入了对应的包装类，从Java 5 开始引入了自动装箱 / 拆箱机制，使得两者可以相互转化。**所以最基本的一点区别就是**：Integer 是int的包装类，int的初始值为零，而Integer的初值为null。int与Integer相比，会把Integer自动拆箱为int再去比。
 
@@ -134,7 +134,7 @@ Java 为每一个基本数据类型都引入了对应的包装类，从Java 5 �
 
 
 
-## 4.  <span id="java_base_4">谈谈对Java多态的理解</span>
+# 4.  <span id="java_base_4">谈谈对Java多态的理解</span>
 
 **多态即事物在运行过程中存在不同的状态。** 
 
@@ -149,7 +149,7 @@ Java 为每一个基本数据类型都引入了对应的包装类，从Java 5 �
 
 
 
-## 5.  <span id="java_base_5">String、StringBuffer、StringBuilder的区别</span>
+# 5.  <span id="java_base_5">String、StringBuffer、StringBuilder的区别</span>
 
 - String：字符串常量，使用字符串拼接时是不同的两个空间。
 - StringBuffer：字符串变量，线程安全，字符串拼接直接在字符串后追加。
@@ -163,7 +163,7 @@ StringBuilder和StringBuffer都是可变的，当进行字符串拼接的时候�
 
 对于大数据量的字符串拼接，采用StringBuffer、StringBuilder。另一种说法，JDK1.6做了优化，通过String声明的字符串在进行用+进行拼接时，底层调用的是StringBuffer，所以性能基本上和后两者没什么区别。
 
-## 6. <span id="java_base_6"> 什么是内部类？内部类的作用</span>
+# 6. <span id="java_base_6"> 什么是内部类？内部类的作用</span>
 
 Java 常见的内部类有四种：成员内部类、静态内部类、方法内部类和匿名内部类。
 
@@ -177,7 +177,7 @@ Java 常见的内部类有四种：成员内部类、静态内部类、方法内
 
 
 
-## 7.  <span id="java_base_7">抽象类和接口的区别</span>
+# 7.  <span id="java_base_7">抽象类和接口的区别</span>
 
 抽象类使用abstract class 定义，抽象类既可以有抽象方法也可以有其他类型的方法，既可以有静态属性也可以有非静态属性。
 
@@ -197,24 +197,24 @@ Java 常见的内部类有四种：成员内部类、静态内部类、方法内
 
 
 
-## 8.  <span id="java_base_8">抽象类的意义</span>
+# 8.  <span id="java_base_8">抽象类的意义</span>
 
 为子类提供一个公共的类型；封装子类中重复的内容；定义有抽象方法，子类虽然有不同的实现，但该方法的定义是一致的；
 
 
 
-## 9.  <span id="java_base_9">抽象类与接口的应用场景</span>
+# 9.  <span id="java_base_9">抽象类与接口的应用场景</span>
 
 - 如果你拥有一些方法并且想让它们中的一些默认实现，那么就用抽象类；如果你想实现多继承，那么必须实用接口；
 - 如果基本功能在不断变化，那么就需要使用抽象类，如果不断改变基本功能并且使用接口，那么就要改变所有实现了该接口的类。
 
-## 10.  <span id="java_base_10">抽象类是否可以没有方法和属性？</span>
+# 10.  <span id="java_base_10">抽象类是否可以没有方法和属性？</span>
 
 可以，抽象类可以没有方法和属性，但是含有抽象方法的类一定是抽象类。
 
 
 
-## 11.  <span id="java_base_11">接口的意义</span>
+# 11.  <span id="java_base_11">接口的意义</span>
 
 规范、扩展、回调。
 
@@ -222,7 +222,7 @@ Java 常见的内部类有四种：成员内部类、静态内部类、方法内
 
 
 
-## 12.  <span id="java_base_12">泛型中的extends和super的区别</span>
+# 12.  <span id="java_base_12">泛型中的extends和super的区别</span>
 
 ```
 <? extends T>和<? super T>是泛型中的“通配符”和“边界”的概念。
@@ -243,7 +243,7 @@ Java 常见的内部类有四种：成员内部类、静态内部类、方法内
 
 
 
-## 13.  <span id="java_base_13">父类的静态方法能否被子类重写？</span>
+# 13.  <span id="java_base_13">父类的静态方法能否被子类重写？</span>
 
 不能，子类继承父类后，非静态方法覆盖父类的方法，父类的静态方法被隐藏。
 
@@ -265,7 +265,7 @@ Java 常见的内部类有四种：成员内部类、静态内部类、方法内
 
 
 
-## 15.  <span id="java_base_15">final、finally、finalize的区别</span>
+# 15.  <span id="java_base_15">final、finally、finalize的区别</span>
 
 final用于声明属性、方法和类，分别表示属性不可变，方法不可覆盖，类不可继承。
 
@@ -275,13 +275,13 @@ finalize是Object类的一个方法，在垃圾收集器执行的时候会回调
 
 
 
-## 16.  <span id="java_base_16">序列化的方式</span>
+# 16.  <span id="java_base_16">序列化的方式</span>
 
 实现Serializable接口和实现Parcelable接口。
 
 
 
-## 17.  <span id="java_base_17">Serializable 和 Parcelable 的区别</span>
+# 17.  <span id="java_base_17">Serializable 和 Parcelable 的区别</span>
 
 Serializable 是 Java的序列化接口。特点是简单，直接实现该接口就行了，其他工作都被系统完成了，但是对于内存开销大，序列化和反序列化需要很多的 I/O 流操作。
 
@@ -291,7 +291,7 @@ Parcelable 是Android的序列化方式，主要用于在内存序列化上，�
 
 
 
-## 18.  <span id="java_base_18">静态属性和静态方法是否可以被继承？是否可以被重写？以及原因。</span>
+# 18.  <span id="java_base_18">静态属性和静态方法是否可以被继承？是否可以被重写？以及原因。</span>
 
 静态属性和静态方法可以被继承，但是没有被重写而是被隐藏。
 
@@ -305,7 +305,7 @@ Parcelable 是Android的序列化方式，主要用于在内存序列化上，�
 
 
 
-## 19.  <span id="java_base_19">静态内部类的设计意图</span>
+# 19.  <span id="java_base_19">静态内部类的设计意图</span>
 
 只是为了降低包的深度，方便类的使用，静态内部类适用于包含类当中，但又不依赖于外在的类，不用使用外在类的非静态属性和方法，只是为了方便管理类结构而定义。在创建静态内部类的时候，不需要外部类对象的引用。
 
@@ -326,7 +326,7 @@ Outer.StaticInner inner0 = new Outer.StaticInner();
 
 
 
-## 20.  <span id="java_base_20">成员内部类、静态内部类、方法内部类（局部内部类）和匿名内部类的理解，以及项目中的应用</span>
+# 20.  <span id="java_base_20">成员内部类、静态内部类、方法内部类（局部内部类）和匿名内部类的理解，以及项目中的应用</span>
 
 成员内部类：
 
@@ -408,17 +408,24 @@ class Outter {
 
 
 
-## 21.  <span id="java_base_21">谈谈对kotlin的理解</span>
+# 21.  <span id="java_base_21">谈谈对kotlin的理解</span>
 
-挖个坑，以后自己填！哼哼（傲娇脸
+Kotlin是一种静态类型的编程语言，可以运行在Java虚拟机上，并且也可以被编译成JavaScript代码。Kotlin旨在解决Java语言中存在的一些问题，例如空指针异常和过多的样板代码。
+
+Kotlin具有简洁、安全、互操作性和可伸缩性等特点。它支持函数式编程风格，并且具有许多现代化语言的特性，如Lambda表达式、扩展函数、数据类、协程等等。此外，Kotlin还提供了很好的null安全支持，通过强制非空类型来减少空指针异常的发生。
+
+Kotlin的代码比Java代码更加简洁明了，同时也保证了类型安全，这使得程序的可读性和可维护性都有了很大的提高。由于支持与Java无缝互操作，因此Kotlin与Java之间可以轻松进行混合编程，这也为正在使用Java的开发者们提供了更多的选择。
+
+总之，Kotlin是一门功能强大的语言，它对Java的改进使得它更加适用于现代编程环境，同时也带给了开发者更多的灵活性和效率。
+
+
+# 22.  <span id="java_base_22">闭包和局部内部类的区别</span>
+
+所谓闭包，就是在函数中有另一个函数，这个内部函数可以作为参数，外部通过传递的方式，将函数传递进来。从而内部函数可以访问到外部函数的局部变量。
 
 
 
-## 22.  <span id="java_base_22">闭包和局部内部类的区别</span>
-
-
-
-## 23.  <span id="java_base_23">String转换成Integer的方式以及原理</span>
+# 23.  <span id="java_base_23">String转换成Integer的方式以及原理</span>
 
 String转int：
 
@@ -542,7 +549,7 @@ public static int parseInt(String s, int radix)  throws NumberFormatException
 
 
 
-## 24.  <span id="java_base_24">面向对象思想</span>
+# 24.  <span id="java_base_24">面向对象思想</span>
 
 ### 设计原则 S.O.L.I.D
 
@@ -626,7 +633,7 @@ public static int parseInt(String s, int radix)  throws NumberFormatException
 * 覆盖
 * 向上转型
 
-## 25. <span id="java_base_25">对象拷贝理解？深拷贝、浅拷贝的区别？</span>
+# 25. <span id="java_base_25">对象拷贝理解？深拷贝、浅拷贝的区别？</span>
 
 首先要先明白为什么需要使用克隆呢？
 
