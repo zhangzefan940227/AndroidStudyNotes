@@ -39,7 +39,10 @@
 
 ### 4. <span id="java_advance_4">静态代理和动态代理的区别，什么场景使用？</span>
 
-参考自：[https://www.jianshu.com/p/2f518a4a4c2b](https://www.jianshu.com/p/2f518a4a4c2b)
+静态代理：编译时完成代理。
+动态代理：运行时动态生成代理类。
+
+WIKI：[反射和代理](https://github.com/zhangzefan940227/AndroidStudyNotes/blob/main/4%20Java/4.1%20%E5%9F%BA%E7%A1%80/%E5%8F%8D%E5%B0%84%E5%92%8C%E4%BB%A3%E7%90%86.md)
 
 
 
