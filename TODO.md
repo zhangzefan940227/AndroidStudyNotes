@@ -4,8 +4,7 @@
 - [ ] 做任何事情都可以明确为一个目的，目的是什么，为了目的可以暂时性的摒弃什么。 - 视频简述。
 - [ ] sizeof(struct) 怎么理解 (char *)calloc(1, sizeof(struct))怎么理解
 - [ ] strncat() fgets() trim_str() memmove()
-
-
+- [ ] Android自定义环境变量
 
 # 知识框架
 
