@@ -5,6 +5,7 @@
 - [ ] sizeof(struct) 怎么理解 (char *)calloc(1, sizeof(struct))怎么理解
 - [ ] strncat() fgets() trim_str() memmove()
 - [ ] Android自定义环境变量
+- [ ] lazyvim 标签页换行，sg sG ff fF调换
 
 # 知识框架
 
