@@ -1,3 +1,14 @@
+# todo-list:
+- [ ] rc脚本语法规则与调用方式，rc是怎么跑的谁调的。
+- [ ] 结构体指针：https://www.cnblogs.com/noticeable/p/8576100.html
+- [ ] 做任何事情都可以明确为一个目的，目的是什么，为了目的可以暂时性的摒弃什么。 - 视频简述。
+- [ ] sizeof(struct) 怎么理解 (char *)calloc(1, sizeof(struct))怎么理解
+- [ ] strncat() fgets() trim_str() memmove()
+
+
+
+# 知识框架
+
 - [ ] 计算机基础
 
   - [ ] 计算机网络
