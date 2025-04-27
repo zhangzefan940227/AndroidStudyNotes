@@ -1,12 +1,7 @@
 # todo-list:
 
-- [x] rc脚本语法规则与调用方式，rc是怎么跑的谁调的。
 - [ ] 结构体指针：https://www.cnblogs.com/noticeable/p/8576100.html
-- [x] 做任何事情都可以明确为一个目的，目的是什么，为了目的可以暂时性的摒弃什么。 - 视频简述。
-- [x] sizeof(struct) 怎么理解 (char *)calloc(1, sizeof(struct))怎么理解
-- [x] strncat() fgets() trim_str() memmove()
 - [ ] Android自定义环境变量
-- [x] lazyvim 标签页换行，sg sG ff fF调换
 
 # 知识框架
 
