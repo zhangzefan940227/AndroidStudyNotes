@@ -135,3 +135,15 @@ int main ()
 Before memmove dest = oldstring, src = newstring
 After memmove dest = newstring, src = newstring
 ```
+
+# 
+一.函数分析
+1.函数原型：
+```c++
+#include <string.h>
+char *strdup(const char *s);
+```
+
+2.功能：
+
+strdup()函数主要是拷贝字符串s的一个副本，由函数返回值返回，这个副本有自己的内存空间，和s没有关联。strdup函数复制一个字符串，使用完后，要使用delete函数删除在函数中动态申请的内存，strdup函数的参数不能为NULL，一旦为NULL，就会报段错误，因为该函数包括了strlen函数，而该函数参数不能是NULL。
