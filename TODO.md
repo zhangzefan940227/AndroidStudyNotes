@@ -1,10 +1,7 @@
 # todo-list:
 
-- [ ] 结构体指针：https://www.cnblogs.com/noticeable/p/8576100.html
-- [ ] Android自定义环境变量
-- [ ] 一个能让我更好工作的能力，或者说让我更成熟的能力，忍，或者不乱发脾气。又不局限于忍。当下忍一下，心情平静后会采用更合理的方式处理这个问题。
-- [ ] 时序图工具：https://github.com/plantuml/plantuml/releases 学会画时序图写工具语法笔记
-- [ ] https://plantuml.com/zh/ 语法文档
+- [x] 时序图工具：https://github.com/plantuml/plantuml/releases 学会画时序图写工具语法笔记
+- [x] https://plantuml.com/zh/ 语法文档
 
 
 # 知识框架
