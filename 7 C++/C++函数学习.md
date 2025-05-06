@@ -136,7 +136,7 @@ Before memmove dest = oldstring, src = newstring
 After memmove dest = newstring, src = newstring
 ```
 
-# 
+# strdup()
 一.函数分析
 1.函数原型：
 ```c++
@@ -147,3 +147,16 @@ char *strdup(const char *s);
 2.功能：
 
 strdup()函数主要是拷贝字符串s的一个副本，由函数返回值返回，这个副本有自己的内存空间，和s没有关联。strdup函数复制一个字符串，使用完后，要使用delete函数删除在函数中动态申请的内存，strdup函数的参数不能为NULL，一旦为NULL，就会报段错误，因为该函数包括了strlen函数，而该函数参数不能是NULL。
+
+# reinterpret_cast
+
+语法
+```c++
+reinterpret_cast < 新类型 > ( 表达式 )
+```
+
+解释
+
+reinterpret_cast 表达式不会编译成任何 CPU 指令（除非在整数和指针间转换，或在指针表示依赖其类型的不明架构上）。
+
+它纯粹是一个编译时指令，指示编译器将 表达式 视为如同具有 新类型 类型一样处理。
