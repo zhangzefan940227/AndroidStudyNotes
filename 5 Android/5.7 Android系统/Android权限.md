@@ -1,6 +1,8 @@
 # 官方文档
 - Android 安全性概览： https://source.android.com/docs/security?hl=zh-cn
 - Android 权限： https://source.android.com/docs/core/permissions?hl=zh_cn
+- Android 应用架构： https://developer.android.com/topic/architecture/intro?hl=zh-cn
+
 
 # 权限类型
 
@@ -93,3 +95,34 @@
 | `"signature"`	| **只有在请求授权的应用使用与声明权限的应用相同的证书进行签名时系统才会授予的权限。** 如果证书匹配，系统会在不通知用户或征得用户明确许可的情况下自动授予权限。|
 | `"knownSigner"`	| **只有在请求授权的应用使用允许使用的证书进行签名时系统才会授予的权限。** 如果请求者的证书已列出，系统会在不通知用户或征得用户明确许可的情况下自动授予权限。|
 | `"signatureOrSystem"`	| `"signature\|privileged"` 的旧同义词。在 API 级别 23 中已废弃。 **系统仅向位于 Android 系统映像的专用文件夹中的应用或使用与声明权限的应用相同的证书进行签名的应用授予的权限。** 不要使用此选项，因为 "signature" 保护级别足以满足大多数需求，无论应用安装在何处，该保护级别都能正常发挥作用。"signatureOrSystem" 权限适用于以下特殊情况：多个供应商将应用内置到一个系统映像中，并且需要明确共享特定功能，因为这些功能是一起构建的。|
+
+# 权限使用
+
+静态授权：在应用需要使用某个权限时，需要在应用对应的 `AndroidManifest.xml` 文件中声明应用所需要的权限。应用安装时授权。
+
+例如：
+
+```xml
+<use-permission android:name="android.permission.CAMERA" />
+```
+
+动态授权：在应用代码逻辑中，当需要使用某一权限时，往往会先调用 `ContextCompat.checkSelfPermission` 检查应用是否具有某一个权限，如果没有，则会调用 `ActivityCompat.requestPermissions` 请求权限。
+
+例如：
+
+```java
+private void requestPermission() {
+    if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+    }
+}
+```
+
+# 权限授予
+
+代码路径： `frameworks/base/services/core/java/com/android/server/pm/permission/PermissionManagerServiceImpl.java` 
+
+涉及接口： `restorePermissionState()` `addPermission()` `removePermission()` `updateAllPermissions()` 
+
+这里不再贴代码，有兴趣的可以下载aosp源码进行阅读。
+
